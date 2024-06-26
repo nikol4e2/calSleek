@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class DoneExercise {
-
+    private Long id;
     private Exercise exercise;
     private int minPerformed;
     private int totalCaloriesBurned;

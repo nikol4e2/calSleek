@@ -7,6 +7,7 @@ import java.util.Date;
 @Data
 public class Weight {
 
+    private Long id;
     private float value;
     private Date date;
 

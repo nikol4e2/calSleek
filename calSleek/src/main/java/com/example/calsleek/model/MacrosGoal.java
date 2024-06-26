@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Data
 public class MacrosGoal {
+    private Long id;
     private Date date;
     private int calories;
     private int protein;

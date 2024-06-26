@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class DailyMacros {
-
+    private Long id;
     private Date date;
     private MacrosGoal goal;
     private List<DoneExercise> doneExercises;

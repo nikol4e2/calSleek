@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FoodEntry {
-
+    private Long id;
     private Food food;
     private float grams;
     private float totalCalories;
