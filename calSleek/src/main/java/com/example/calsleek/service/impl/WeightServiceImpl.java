@@ -25,7 +25,7 @@ public class WeightServiceImpl implements WeightService {
     }
 
     @Override
-    public Weight save(float value, Date date) {
+    public Weight save(float value, LocalDate date) {
         return this.weightRepository.save(new Weight(value,date));
     }
 
@@ -34,6 +34,7 @@ public class WeightServiceImpl implements WeightService {
         this.weightRepository.deleteById(id);
     }
 
+
     @Override
     public Optional<Weight> findById(Long id) {
         return this.weightRepository.findById(id);
@@ -41,7 +42,7 @@ public class WeightServiceImpl implements WeightService {
 
     @Override
     public Optional<Weight> addWeightToUser(float value, String username) {
-        Weight weight=new Weight(value, Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        Weight weight=new Weight(value, LocalDate.now());
         this.weightRepository.save(weight);
         User user=this.userRepository.findByUsername(username).get();
         List<Weight> weightList=user.getWeightList();

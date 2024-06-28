@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(String username, String password, String repeatPassword, String name, String surname, Date dateOfBirth, float weight, DailyMacros dailyMacros) {
+    public User register(String username, String password, String repeatPassword, String name, String surname, LocalDate dateOfBirth, float weight, DailyMacros dailyMacros) {
         if(username==null || username.isEmpty() || password==null || password.isEmpty())
         {
             throw new InvalidUserCredentialsException();
@@ -54,12 +54,12 @@ public class UserServiceImpl implements UserService {
             throw new UserNameAlreadyExistsException(username);
         }
         Date date=Date.from(LocalDate.now().minusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        if(dateOfBirth.after(date))
+        if(dateOfBirth.isBefore(LocalDate.now().minusYears(100)) || dateOfBirth.isAfter(LocalDate.now()))
         {
             throw new InvalidDateException();
 
         }
-        Weight weightObj=weightRepository.save(new Weight(weight,Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant())));
+        Weight weightObj=weightRepository.save(new Weight(weight,LocalDate.now()));
         User user=new User(username,name,surname,password,dateOfBirth,weightObj);
         return this.userRepository.save(user);
     }
@@ -70,14 +70,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User edit(String username, String password, String repeatPassword, String name, String surname, Date dateOfBirth) {
+    public User edit(String username, String password, String repeatPassword, String name, String surname, LocalDate dateOfBirth) {
         User user=(User) this.userRepository.findByUsername(username).get();
         if(user!=null) {
             if (!password.equals(repeatPassword)) {
                 throw new PasswordsDoNotMatchException();
             }
             Date date = Date.from(LocalDate.now().minusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            if (dateOfBirth.after(date)) {
+            if (dateOfBirth.isAfter(LocalDate.now())) {
                 throw new InvalidDateException();
 
             }

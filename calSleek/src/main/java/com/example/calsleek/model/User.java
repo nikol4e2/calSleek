@@ -2,6 +2,7 @@ package com.example.calsleek.model;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,12 +13,12 @@ public class User {
     private String name;
     private String surname;
     private String password;
-    private Date birth;
+    private LocalDate birth;
     private List<Weight> weightList;
     private List<DailyMacros> dailyMacros;
     private MacrosGoal macrosGoal;
 
-    public User(String username, String name, String surname, String password, Date birth, Weight weight) {
+    public User(String username, String name, String surname, String password, LocalDate birth, Weight weight) {
         this.username = username;
         this.name = name;
         this.surname = surname;
