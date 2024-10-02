@@ -18,7 +18,7 @@ public class DailyMacros {
     public DailyMacros(LocalDate date, MacrosGoal goal) {
         this.date = date;
         this.goal = goal;
-        this.doneExercises=new ArrayList<>();
+        this.doneExercises=new ArrayList<>(); //LIST OF ALL EXERCISES DONE FOR THAT DAY
         this.foodEntries=new ArrayList<>();
     }
 }
