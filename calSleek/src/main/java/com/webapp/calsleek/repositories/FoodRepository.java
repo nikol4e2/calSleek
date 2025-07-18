@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
-    Optional<Food> findByNameContainsOrBrandContainingIgnoreCase(String name,  String brand);
-    List<Food> getAllByCreatedBy(User user);
+
+    List<Food> findAllByCreatedBy(User user);
+    List<Food> findAllByNameContainingIgnoreCaseOrBrandContainingIgnoreCase(String name,  String brand);
 }

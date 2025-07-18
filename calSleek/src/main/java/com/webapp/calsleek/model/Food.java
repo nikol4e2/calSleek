@@ -26,19 +26,9 @@ public class Food {
     @JoinColumn(name = "created_by_id")
     private User createdBy;
 
-
-    public Food(boolean isVerified, int fats, int protein, int carbs, int calories, String name) {
-        this.isVerified = isVerified;
-        this.fats = fats;
-        this.protein = protein;
-        this.carbs = carbs;
-        this.calories = calories;
+    public Food(String name, String brand, int calories, int carbs, int protein, int fats, boolean isVerified, User createdBy) {
         this.name = name;
-        this.createdBy = null;
-    }
-
-    public Food(String name, int calories, int carbs, int protein, int fats, boolean isVerified, User createdBy) {
-        this.name = name;
+        this.brand = brand;
         this.calories = calories;
         this.carbs = carbs;
         this.protein = protein;
@@ -46,6 +36,8 @@ public class Food {
         this.isVerified = isVerified;
         this.createdBy = createdBy;
     }
+
+
 
 
 }
