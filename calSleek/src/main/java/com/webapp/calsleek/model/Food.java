@@ -15,6 +15,7 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private String brand;
     private int calories;
     private int carbs;
     private int protein;
