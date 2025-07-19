@@ -27,7 +27,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     public Measurement addMeasurementToUser(Long userId, LocalDateTime time, float value) {
         User user=userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         Measurement measurement=new Measurement(time,value);
-        measurement.setUser(user);
+
         List<Measurement> measurementList=user.getMeasurements();
         measurementList.add(measurement);
         user.setMeasurements(measurementList);

@@ -9,5 +9,5 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface DailyMacrosRepository extends JpaRepository<DailyMacros, Long> {
-    Optional<DailyMacros> findByUserAndDate(User user, LocalDateTime date);
+
 }

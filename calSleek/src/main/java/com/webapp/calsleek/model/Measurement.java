@@ -16,9 +16,7 @@ public class Measurement {
     private LocalDateTime date;
     private float value; //in kgs
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
 
     public Measurement(LocalDateTime date, float value) {
         this.date = date;

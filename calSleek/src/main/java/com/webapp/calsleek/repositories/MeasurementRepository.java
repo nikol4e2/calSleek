@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MeasurementRepository extends JpaRepository<Measurement, Long> {
-    Optional<Measurement> findByDateAndUser(LocalDateTime date, User user);
-    List<Measurement> findAllByUser(User user);
+
+
 }

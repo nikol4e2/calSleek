@@ -23,9 +23,7 @@ public class DailyMacros {
     private List<ExerciseLog> exercises;
     private int totalBurnedCalories;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
 
     public DailyMacros() {
         this.exercises = new ArrayList<>();
