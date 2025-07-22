@@ -1,6 +1,7 @@
 package com.webapp.calsleek.repositories;
 
+import com.webapp.calsleek.model.Goal;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GoalRepository extends JpaRepository<GoalRepository, Long> {
+public interface GoalRepository extends JpaRepository<Goal, Long> {
 }

@@ -26,11 +26,8 @@ public class FoodEntry {
     private int totalProtein;
     private int totalFats;
 
-    @ManyToOne
-    @JoinColumn(name = "daily_macros_id")
-    private DailyMacros dailyMacros;
 
-    public FoodEntry(TimeCategory category, Food food, int grams, int totalCalories, int totalCarbs, int totalProtein, int totalFats, DailyMacros dailyMacros) {
+    public FoodEntry(TimeCategory category, Food food, int grams, int totalCalories, int totalCarbs, int totalProtein, int totalFats) {
         this.category = category;
         this.food = food;
         this.grams = grams;
@@ -38,6 +35,16 @@ public class FoodEntry {
         this.totalCarbs = totalCarbs;
         this.totalProtein = totalProtein;
         this.totalFats = totalFats;
-        this.dailyMacros = dailyMacros;
+
     }
+
+    public FoodEntry(TimeCategory category, Food food, int grams) {
+        this.category = category;
+        this.food = food;
+        this.grams = grams;
+        //TODO CALCULATE MACROS
+    }
+
+
+
 }

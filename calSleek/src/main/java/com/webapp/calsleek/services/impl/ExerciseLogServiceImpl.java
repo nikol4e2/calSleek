@@ -33,7 +33,7 @@ public class ExerciseLogServiceImpl implements ExerciseLogService {
     }
 
     @Override
-    public ExerciseLog update(Long id, int minutesPerformed) {
+    public ExerciseLog edit(Long id, int minutesPerformed) {
         ExerciseLog exerciseLog=this.exerciseLogRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(id));
         exerciseLog.setDurationInMinutes(minutesPerformed);
         return this.exerciseLogRepository.save(exerciseLog);

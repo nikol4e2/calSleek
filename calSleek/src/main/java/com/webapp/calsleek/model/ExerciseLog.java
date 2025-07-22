@@ -16,11 +16,13 @@ public class ExerciseLog {
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
     private int durationInMinutes;
+    private int totalBurnedCalories;
 
 
     public ExerciseLog(Exercise exercise, int durationInMinutes) {
         this.exercise = exercise;
         this.durationInMinutes = durationInMinutes;
+        this.totalBurnedCalories=durationInMinutes* exercise.getCaloriesBurnedPerMinute();
     }
 
 
