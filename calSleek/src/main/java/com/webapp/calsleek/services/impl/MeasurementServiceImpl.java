@@ -53,6 +53,8 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public List<Measurement> getAllMeasurementsForUser(Long userId)
     {
+
+        //TODO SORT THE MEASUREMENTS BY DATE/TIME
         User user=userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
         return user.getMeasurements();
     }

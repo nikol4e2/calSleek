@@ -42,7 +42,13 @@ public class FoodEntry {
         this.category = category;
         this.food = food;
         this.grams = grams;
-        //TODO CALCULATE MACROS
+
+        float multiplier= grams / 100.0f;
+        this.totalCalories = Math.round(food.getCalories() * multiplier);
+        this.totalCarbs = Math.round(food.getCarbs() * multiplier);
+        this.totalProtein = Math.round(food.getProtein() * multiplier);
+        this.totalFats = Math.round(food.getFats() * multiplier);
+
     }
 
 

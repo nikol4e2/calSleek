@@ -10,6 +10,7 @@ import com.webapp.calsleek.services.FoodService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FoodServiceImpl implements FoodService {
@@ -23,6 +24,10 @@ public class FoodServiceImpl implements FoodService {
         this.userRepository = userRepository;
     }
 
+    @Override
+    public Optional<Food> getById(Long id) {
+        return foodRepository.findById(id);
+    }
 
     @Override
     public Food saveFood(String name, String brand, int calories, int carbs, int protein, int fat, User createdBy, boolean isVerified) {
@@ -48,7 +53,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Food editFood(Long id, String name, String brand, int calories, int carbs, int protein, int fat, User createdBy, boolean isVerified) {
+    public Food editFood(Long id, String name, String brand, int calories, int carbs, int protein, int fat) {
         Food food=this.foodRepository.findById(id).orElseThrow(() -> new FoodNotFoundException(id));
         food.setName(name);
         food.setBrand(brand);
@@ -93,5 +98,10 @@ public class FoodServiceImpl implements FoodService {
 
     private boolean areNutrientsValid(int calories, int carbs, int proteins, int fats) {
         return calories >= (carbs * 4 + proteins * 4 + fats * 9);
+    }
+
+    @Override
+    public List<Food> getAll() {
+        return this.foodRepository.findAll();
     }
 }
