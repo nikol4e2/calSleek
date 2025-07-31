@@ -4,6 +4,7 @@ import com.webapp.calsleek.model.Food;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.dtos.FoodDto;
 import com.webapp.calsleek.services.FoodService;
+import com.webapp.calsleek.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
