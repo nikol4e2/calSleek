@@ -51,7 +51,7 @@ public class FoodController {
 
         if (foodDto.getUserId() != null) {
 
-            //IMPORT WHEN USERSERVICE IS CREATED
+
             user = userService.findById(foodDto.getUserId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
             isVerified = false; // Храна од корисник — не е верифицирана

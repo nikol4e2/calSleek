@@ -1,6 +1,7 @@
 package com.webapp.calsleek.web;
 
 import com.webapp.calsleek.model.Exercise;
+import com.webapp.calsleek.model.dtos.ExerciseDto;
 import com.webapp.calsleek.services.ExerciseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +40,35 @@ public class ExerciseController {
     }
 
 
-//    @PostMapping
-//    public ResponseEntity<Exercise> createExercise(@RequestBody ExerciseDto exerciseDto) {
-//
-//    }
+    @PostMapping
+    public ResponseEntity<Exercise> createExercise(@RequestBody ExerciseDto exerciseDto) {
+
+        if(exerciseDto.getCaloriesBurnedPerMinute() > 0 && !exerciseDto.getName().isEmpty()) {
+            Exercise exercise = this.exerciseService.saveExercise(exerciseDto.getName(), exerciseDto.getCaloriesBurnedPerMinute());
+            return new ResponseEntity<>(exercise, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Exercise> updateExercise(@PathVariable Long id,@RequestBody ExerciseDto exerciseDto) {
+        this.exerciseService.editExercise(id, exerciseDto.getName(), exerciseDto.getCaloriesBurnedPerMinute());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Exercise> deleteExercise(@PathVariable Long id) {
+        this.exerciseService.deleteExercise(id);
+        if(exerciseService.getExerciseById(id).isPresent())
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
 
 

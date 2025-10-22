@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MeasurementServiceImpl implements MeasurementService {
@@ -21,6 +22,11 @@ public class MeasurementServiceImpl implements MeasurementService {
     public MeasurementServiceImpl(MeasurementRepository measurementRepository,UserRepository userRepository) {
         this.measurementRepository = measurementRepository;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public Optional<Measurement> getMeasurementById(Long id) {
+        return  measurementRepository.findById(id);
     }
 
     @Override
