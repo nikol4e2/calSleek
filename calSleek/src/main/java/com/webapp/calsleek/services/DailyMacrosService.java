@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface DailyMacrosService {
-    DailyMacros save(LocalDateTime date);
+    DailyMacros save(LocalDateTime date, Long userId);
     DailyMacros edit(Long id,LocalDateTime date);
     void addFoodEntry(Long dailyMacrosId,FoodEntry foodEntry);
     void removeFoodEntry(Long dailyMacrosId,Long foodEntryId);

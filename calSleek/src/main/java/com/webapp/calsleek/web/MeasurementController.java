@@ -53,7 +53,7 @@ public class MeasurementController {
         return ResponseEntity.noContent().build();
     }
 
-    
+
 
 
 

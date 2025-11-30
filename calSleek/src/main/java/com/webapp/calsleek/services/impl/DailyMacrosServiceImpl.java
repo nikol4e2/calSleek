@@ -5,6 +5,7 @@ import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.repositories.DailyMacrosRepository;
 import com.webapp.calsleek.services.DailyMacrosService;
+import com.webapp.calsleek.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,16 +15,21 @@ import java.util.Optional;
 public class DailyMacrosServiceImpl implements DailyMacrosService {
 
     private final DailyMacrosRepository dailyMacrosRepository;
+    private final UserService userService;
 
 
-    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository) {
+    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository,UserService userService) {
         this.dailyMacrosRepository = dailyMacrosRepository;
+        this.userService = userService;
     }
 
 
     @Override
-    public DailyMacros save(LocalDateTime date) {
-        return this.dailyMacrosRepository.save(new DailyMacros(date));
+    public DailyMacros save(LocalDateTime date, Long userId) {
+        DailyMacros dailyMacros = new DailyMacros(date);
+        userService.addDailyMacrosToUser(userId,dailyMacros);
+        return dailyMacrosRepository.save(dailyMacros);
+
     }
 
     @Override

@@ -1,13 +1,16 @@
 package com.webapp.calsleek.services.impl;
 
+import com.webapp.calsleek.model.DailyMacros;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.exceptions.InvalidUserCredentialsException;
 import com.webapp.calsleek.model.exceptions.PasswordsDoNotMatchException;
 import com.webapp.calsleek.model.exceptions.UserNameAlreadyExists;
+import com.webapp.calsleek.model.exceptions.UserNotFoundException;
 import com.webapp.calsleek.repositories.UserRepository;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -65,5 +68,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+
+    @Override
+    public void addDailyMacrosToUser(Long userId, DailyMacros dailyMacros) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        List<DailyMacros> dailyMacrosList = user.getDailyMacros();
+        dailyMacrosList.add(dailyMacros);
+        user.setDailyMacros(dailyMacrosList);
+        userRepository.save(user);
     }
 }

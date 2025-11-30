@@ -1,26 +1,24 @@
 package com.webapp.calsleek.services.impl;
 
-import com.webapp.calsleek.model.DailyMacros;
 import com.webapp.calsleek.model.Food;
 import com.webapp.calsleek.model.FoodEntry;
-import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.enums.TimeCategory;
 import com.webapp.calsleek.repositories.FoodEntryRepository;
 import com.webapp.calsleek.repositories.FoodRepository;
-import com.webapp.calsleek.services.FoodService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FoodEntryService implements com.webapp.calsleek.services.FoodEntryService {
+public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEntryService {
 
     private final FoodEntryRepository foodEntryRepository;
     private final FoodRepository foodRepository;
 
 
-    public FoodEntryService(FoodEntryRepository foodEntryRepository, FoodRepository foodRepository) {
+    public FoodEntryServiceImpl(FoodEntryRepository foodEntryRepository, FoodRepository foodRepository) {
         this.foodEntryRepository = foodEntryRepository;
         this.foodRepository = foodRepository;
     }
@@ -54,11 +52,17 @@ public class FoodEntryService implements com.webapp.calsleek.services.FoodEntryS
     }
 
     @Override
-    public void delete(FoodEntry foodEntry) {
-        if(this.foodEntryRepository.existsById(foodEntry.getId()))
+    public void deleteById(Long id) {
+        if(this.foodEntryRepository.existsById(id))
         {
-            this.foodEntryRepository.delete(foodEntry);
+            this.foodEntryRepository.deleteById(id);
         }
+
     }
 
+
+    @Override
+    public List<FoodEntry> getAllForUserAndDate(Long userId, LocalDateTime date) {
+        return foodEntryRepository.findAllByUserByIdAndDate(userId,date);
+    }
 }
