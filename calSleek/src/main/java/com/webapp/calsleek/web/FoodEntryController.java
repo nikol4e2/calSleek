@@ -37,6 +37,8 @@ public class FoodEntryController {
     }
 
 
+
+    // TODO FIND A SOLUTION HOW TO ADD THE ENTRY TO THE DAILYMACROS
     @PostMapping
     public ResponseEntity<FoodEntry> createFoodEntry(@RequestBody FoodEntryDto foodEntryDto) {
 
