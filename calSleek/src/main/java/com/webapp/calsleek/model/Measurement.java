@@ -11,10 +11,14 @@ import java.time.LocalDateTime;
 @Entity
 public class Measurement {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime date;
     private float value; //in kgs
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 

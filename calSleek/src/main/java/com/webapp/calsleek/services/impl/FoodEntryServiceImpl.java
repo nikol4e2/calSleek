@@ -61,8 +61,9 @@ public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEn
     }
 
 
-    @Override
-    public List<FoodEntry> getAllForUserAndDate(Long userId, LocalDateTime date) {
-        return foodEntryRepository.findAllByUserByIdAndDate(userId,date);
-    }
+    //TODO FIND WAY TO IMPLEMENT
+//    @Override
+//    public List<FoodEntry> getAllForUserAndDate(Long userId, LocalDateTime date) {
+//        return foodEntryRepository.findAllByUserByIdAndDate(userId,date);
+//    }
 }

@@ -35,7 +35,7 @@ public class DailySummaryServiceImpl implements DailySummaryService {
             dailySummary.setTotalCarbs(totalCarbs);
             dailySummary.setTotalProteins(totalProteins);
             dailySummary.setTotalFats(totalFats);
-            dailySummary.setTotalcaloriesBurned(totalCaloriesBurned);
+            dailySummary.setTotalCaloriesBurned(totalCaloriesBurned);
             return dailySummaryRepository.save(dailySummary);
         }
         throw new IllegalArgumentException("Can't find daily summary with id: " + id);

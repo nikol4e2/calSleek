@@ -18,11 +18,16 @@ public class ExerciseLog {
     private int durationInMinutes;
     private int totalBurnedCalories;
 
+    @ManyToOne
+    @JoinColumn(name = "daily_macros_id")
+    private DailyMacros dailyMacros;
 
-    public ExerciseLog(Exercise exercise, int durationInMinutes) {
+
+    public ExerciseLog(Exercise exercise, int durationInMinutes,DailyMacros dailyMacros) {
         this.exercise = exercise;
         this.durationInMinutes = durationInMinutes;
         this.totalBurnedCalories=durationInMinutes* exercise.getCaloriesBurnedPerMinute();
+        this.dailyMacros=dailyMacros;
     }
 
 

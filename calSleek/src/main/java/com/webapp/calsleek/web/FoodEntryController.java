@@ -28,13 +28,13 @@ public class FoodEntryController {
         return this.foodEntryService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId, @RequestParam LocalDateTime date) {
-        List<FoodEntry> foodEntries=this.foodEntryService.getAllForUserAndDate(userId,date);
-        if(foodEntries.isEmpty())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(foodEntries);
-    }
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId, @RequestParam LocalDateTime date) {
+//        List<FoodEntry> foodEntries=this.foodEntryService.getAllForUserAndDate(userId,date);
+//        if(foodEntries.isEmpty())
+//            return ResponseEntity.notFound().build();
+//        return ResponseEntity.ok(foodEntries);
+//    }
 
 
 

@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 public class FoodEntry {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private TimeCategory category;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "food_id")
     private Food food;
     private int grams;
@@ -25,6 +25,11 @@ public class FoodEntry {
     private int totalCarbs;
     private int totalProtein;
     private int totalFats;
+
+
+    @ManyToOne
+    @JoinColumn(name = "daily_macros_id")
+    private DailyMacros dailyMacros;
 
 
     public FoodEntry(TimeCategory category, Food food, int grams, int totalCalories, int totalCarbs, int totalProtein, int totalFats) {
@@ -49,6 +54,15 @@ public class FoodEntry {
         this.totalProtein = Math.round(food.getProtein() * multiplier);
         this.totalFats = Math.round(food.getFats() * multiplier);
 
+    }
+
+    public void setGrams(int grams) {
+        this.grams = grams;
+        float multiplier = grams / 100.0f;
+        this.totalCalories = Math.round(food.getCalories() * multiplier);
+        this.totalCarbs = Math.round(food.getCarbs() * multiplier);
+        this.totalProtein = Math.round(food.getProtein() * multiplier);
+        this.totalFats = Math.round(food.getFats() * multiplier);
     }
 
 

@@ -19,18 +19,21 @@ public class ExerciseLogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ExerciseLog> getExerciseLog(@PathVariable Long id) {
-        ExerciseLog exerciseLog = exerciseLogService.findById(id).get();
-        if (exerciseLog == null) {
-            return ResponseEntity.notFound().build();
+        if(exerciseLogService.findById(id).isPresent()) {
+            ExerciseLog exerciseLog = exerciseLogService.findById(id).get();
+            return ResponseEntity.ok(exerciseLog);
         }
-        return ResponseEntity.ok(exerciseLog);
+
+        return ResponseEntity.notFound().build();
+
+
     }
 
-    @PostMapping()
-    public ResponseEntity<ExerciseLog> saveExerciseLog(@RequestBody ExerciseLogDto exerciseLogDto) {
-        ExerciseLog exerciseLog=this.exerciseLogService.save(exerciseLogDto.getExerciseId(), exerciseLogDto.getDurationInMinutes());
-        return ResponseEntity.ok(exerciseLog);
-    }
+//    @PostMapping()
+//    public ResponseEntity<ExerciseLog> saveExerciseLog(@RequestBody ExerciseLogDto exerciseLogDto) {
+//        ExerciseLog exerciseLog=this.exerciseLogService.save(exerciseLogDto.getExerciseId(), exerciseLogDto.getDurationInMinutes());
+//        return ResponseEntity.ok(exerciseLog);
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<ExerciseLog> editExerciseLog(@PathVariable Long id, @RequestBody ExerciseLogDto exerciseLogDto) {

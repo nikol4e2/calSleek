@@ -3,6 +3,7 @@ package com.webapp.calsleek.services.impl;
 import com.webapp.calsleek.model.DailyMacros;
 import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
+import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.repositories.DailyMacrosRepository;
 import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.UserService;
@@ -26,7 +27,8 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
 
     @Override
     public DailyMacros save(LocalDateTime date, Long userId) {
-        DailyMacros dailyMacros = new DailyMacros(date);
+        User user=userService.findById(userId).orElseThrow(()->new RuntimeException("User Not Found"));
+        DailyMacros dailyMacros = new DailyMacros(date,user);
         userService.addDailyMacrosToUser(userId,dailyMacros);
         return dailyMacrosRepository.save(dailyMacros);
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Exercise {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private int caloriesBurnedPerMinute;
