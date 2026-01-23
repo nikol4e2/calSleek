@@ -9,7 +9,9 @@ import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,5 +82,16 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
         if (this.dailyMacrosRepository.existsById(id)) {
             this.dailyMacrosRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public List<FoodEntry> getFoodEntriesForUserAndDate(Long userId, LocalDateTime dateTime) {
+        LocalDateTime startOfDay = dateTime.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = dateTime.toLocalDate().atTime(23, 59, 59, 999_999_999);
+
+        return dailyMacrosRepository
+                .findByUser_IdAndDateBetween(userId, startOfDay, endOfDay)
+                .map(DailyMacros::getFoodEntries)
+                .orElse(List.of());
     }
 }

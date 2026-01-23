@@ -9,5 +9,6 @@ import java.util.Date;
 import java.util.Optional;
 
 public interface DailyMacrosRepository extends JpaRepository<DailyMacros, Long> {
+    Optional<DailyMacros> findByUser_IdAndDateBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
 }

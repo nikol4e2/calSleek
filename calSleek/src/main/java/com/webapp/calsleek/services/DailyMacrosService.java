@@ -4,7 +4,9 @@ import com.webapp.calsleek.model.DailyMacros;
 import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface DailyMacrosService {
@@ -16,4 +18,5 @@ public interface DailyMacrosService {
     void removeExerciseLog(Long dailyMacrosId, Long exerciseLogId);
     Optional<DailyMacros> findById(Long id);
     void deleteById(Long id);
+    List<FoodEntry> getFoodEntriesForUserAndDate(Long userId, LocalDateTime date);
 }

@@ -2,6 +2,7 @@ package com.webapp.calsleek.services.impl;
 
 import com.webapp.calsleek.model.Food;
 import com.webapp.calsleek.model.FoodEntry;
+import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.enums.TimeCategory;
 import com.webapp.calsleek.repositories.FoodEntryRepository;
 import com.webapp.calsleek.repositories.FoodRepository;
@@ -28,7 +29,7 @@ public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEn
     public FoodEntry save(TimeCategory category, Food food, int grams) {
         if(grams <= 0)
         {
-            throw new IllegalArgumentException("grams must be greater than 0");
+            throw new IllegalArgumentException("Grams must be greater than 0");
         }
         FoodEntry foodEntry = new FoodEntry(category, food, grams);
         return foodEntryRepository.save(foodEntry);
@@ -40,7 +41,7 @@ public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEn
         foodEntry.setCategory(category);
         if(grams <= 0)
         {
-            throw new IllegalArgumentException("grams must be greater than 0");
+            throw new IllegalArgumentException("Grams must be greater than 0");
         }
         foodEntry.setGrams(grams);
         return foodEntryRepository.save(foodEntry);
@@ -61,9 +62,5 @@ public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEn
     }
 
 
-    //TODO FIND WAY TO IMPLEMENT
-//    @Override
-//    public List<FoodEntry> getAllForUserAndDate(Long userId, LocalDateTime date) {
-//        return foodEntryRepository.findAllByUserByIdAndDate(userId,date);
-//    }
+
 }
