@@ -59,6 +59,7 @@ public class DailyMacros {
 
 
     public void addFoodEntry(FoodEntry foodEntry) {
+        foodEntry.setDailyMacros(this);
         this.foodEntries.add(foodEntry);
         this.totalCalories+=foodEntry.getTotalCalories();
         this.totalCarbs+=foodEntry.getTotalCarbs();

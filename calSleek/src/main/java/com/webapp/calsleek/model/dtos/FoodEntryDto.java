@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class FoodEntryDto {
     private TimeCategory category;
     private Food food;
+    private Long dailyMacrosId;
     private int grams;
     private int totalCalories;
     private int totalCarbs;

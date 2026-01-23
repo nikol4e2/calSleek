@@ -2,8 +2,8 @@ package com.webapp.calsleek.web;
 
 import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.model.dtos.FoodEntryDto;
+import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.FoodEntryService;
-import com.webapp.calsleek.services.impl.FoodEntryServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +16,11 @@ public class FoodEntryController {
 
 
     private final FoodEntryService foodEntryService;
+    private final DailyMacrosService dailyMacrosService;
 
-    public FoodEntryController(FoodEntryService foodEntryService) {
+    public FoodEntryController(FoodEntryService foodEntryService, DailyMacrosService dailyMacrosService) {
         this.foodEntryService = foodEntryService;
+        this.dailyMacrosService = dailyMacrosService;
     }
 
 
@@ -42,7 +44,18 @@ public class FoodEntryController {
     @PostMapping
     public ResponseEntity<FoodEntry> createFoodEntry(@RequestBody FoodEntryDto foodEntryDto) {
 
-        FoodEntry foodEntry = this.foodEntryService.save(foodEntryDto.getCategory(), foodEntryDto.getFood(), foodEntryDto.getGrams());
+        if (foodEntryDto.getDailyMacrosId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        FoodEntry foodEntry = this.foodEntryService.save(
+                foodEntryDto.getCategory(),
+                foodEntryDto.getFood(),
+                foodEntryDto.getGrams()
+        );
+
+        this.dailyMacrosService.addFoodEntry(foodEntryDto.getDailyMacrosId(), foodEntry);
+
         return ResponseEntity.ok(foodEntry);
 
 
