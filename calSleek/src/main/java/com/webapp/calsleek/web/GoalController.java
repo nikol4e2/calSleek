@@ -2,7 +2,10 @@ package com.webapp.calsleek.web;
 
 import com.webapp.calsleek.model.Goal;
 import com.webapp.calsleek.model.dtos.GoalDto;
+import com.webapp.calsleek.model.exceptions.GoalNotFoundException;
 import com.webapp.calsleek.services.GoalService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,17 +29,24 @@ public class GoalController {
     }
 
 
-    //TODO-IMPLEMENT
+    //TODO-IMPLEMENT PRMESTI VO USER CONTROLLER
 
-//    @PostMapping
-//    public ResponseEntity<Goal> createGoal(@RequestBody GoalDto goalDto) {
-//
-//
-//    }
+    @PostMapping
+    public ResponseEntity<Goal> createGoal(@Valid @RequestBody GoalDto goalDto) {
+        Goal goal=this.goalService.saveGoal(goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale());
+        return ResponseEntity.status(HttpStatus.CREATED).body(goal);
+
+    }
 
 
-    //TODO-IMPLEMENT EDIT GOAL
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Goal> updateGoal(@PathVariable Long id, @Valid @RequestBody GoalDto goalDto) {
+        Goal goal=this.goalService.findById(id).orElseThrow(()->new GoalNotFoundException());
+        this.goalService.editGoal(id,goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale());
+        return ResponseEntity.ok(goal);
+    }
 
 
 

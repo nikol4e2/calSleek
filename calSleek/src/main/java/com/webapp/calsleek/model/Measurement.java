@@ -22,8 +22,9 @@ public class Measurement {
 
 
 
-    public Measurement(LocalDateTime date, float value) {
+    public Measurement(LocalDateTime date, float value, User user) {
         this.date = date;
         this.value = value;
+        this.user = user;
     }
 }

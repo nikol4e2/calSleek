@@ -31,6 +31,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user",orphanRemoval = true)
     private List<DailyMacros> dailyMacros;
 
+    @OneToMany
+    private List<Food> createdFoods;
+
 
     public User(String username, String firstName, String lastName, String email, String password) {
         this.username = username;
@@ -41,6 +44,7 @@ public class User {
         this.goal=null;
         this.measurements=new ArrayList<>();
         this.dailyMacros=new ArrayList<>();
+        this.createdFoods=new ArrayList<>();
     }
 
 }

@@ -8,22 +8,28 @@ import com.webapp.calsleek.model.exceptions.UserNameAlreadyExists;
 import com.webapp.calsleek.model.exceptions.UserNotFoundException;
 import com.webapp.calsleek.repositories.UserRepository;
 import com.webapp.calsleek.services.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
 
-    //TODO Add BCryptPassword Encoder
 
 
+
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     @Override
@@ -34,9 +40,10 @@ public class UserServiceImpl implements UserService {
 
         User user =userRepository.findByUsername(username).orElseThrow(()->new InvalidUserCredentialsException(username));
 
-        /* if(!passwordEncoder.matches(password,user.getPassword())){
-            throw new PasswordsDoNotMatchException();
-         */
+         if(!passwordEncoder.matches(password,user.getPassword())) {
+             throw new PasswordsDoNotMatchException();
+         }
+
         return user;
     }
 
@@ -55,8 +62,8 @@ public class UserServiceImpl implements UserService {
             throw new UserNameAlreadyExists(username);
         }
 
-        //String encodedPassword=passwordEncoder.encode(password);
-        User user = new User(username,firstName,lastName,email,password); //encoded password ovde
+        String encodedPassword=passwordEncoder.encode(password);
+        User user = new User(username,firstName,lastName,email,encodedPassword); 
         return userRepository.save(user);
     }
 

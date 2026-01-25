@@ -32,7 +32,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public Measurement addMeasurementToUser(Long userId, LocalDateTime time, float value) {
         User user=userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        Measurement measurement=new Measurement(time,value);
+        Measurement measurement=new Measurement(time,value,user);
 
         List<Measurement> measurementList=user.getMeasurements();
         measurementList.add(measurement);

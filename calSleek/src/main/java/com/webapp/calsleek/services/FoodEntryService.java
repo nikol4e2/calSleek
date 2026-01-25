@@ -15,5 +15,5 @@ public interface FoodEntryService {
     FoodEntry edit(Long id, TimeCategory category, int grams);
     Optional<FoodEntry> findById(Long id);
     void deleteById(Long id);
-   // List<FoodEntry> getAllForUserAndDate(Long userId, LocalDateTime date);
+
 }
