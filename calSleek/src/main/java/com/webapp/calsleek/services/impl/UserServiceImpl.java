@@ -1,6 +1,7 @@
 package com.webapp.calsleek.services.impl;
 
 import com.webapp.calsleek.model.DailyMacros;
+import com.webapp.calsleek.model.Goal;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.exceptions.InvalidUserCredentialsException;
 import com.webapp.calsleek.model.exceptions.PasswordsDoNotMatchException;
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
         }
 
         String encodedPassword=passwordEncoder.encode(password);
-        User user = new User(username,firstName,lastName,email,encodedPassword); 
+        User user = new User(username,firstName,lastName,email,encodedPassword);
         return userRepository.save(user);
     }
 
@@ -85,6 +86,12 @@ public class UserServiceImpl implements UserService {
         List<DailyMacros> dailyMacrosList = user.getDailyMacros();
         dailyMacrosList.add(dailyMacros);
         user.setDailyMacros(dailyMacrosList);
+        userRepository.save(user);
+    }
+    @Override
+    public void addGoalToUser(Long userId, Goal goal) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setGoal(goal);
         userRepository.save(user);
     }
 }

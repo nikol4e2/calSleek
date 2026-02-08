@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/exercise-logs")
 public class ExerciseLogController {
 
 
@@ -29,11 +30,7 @@ public class ExerciseLogController {
 
     }
 
-//    @PostMapping()
-//    public ResponseEntity<ExerciseLog> saveExerciseLog(@RequestBody ExerciseLogDto exerciseLogDto) {
-//        ExerciseLog exerciseLog=this.exerciseLogService.save(exerciseLogDto.getExerciseId(), exerciseLogDto.getDurationInMinutes());
-//        return ResponseEntity.ok(exerciseLog);
-//    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ExerciseLog> editExerciseLog(@PathVariable Long id, @RequestBody ExerciseLogDto exerciseLogDto) {

@@ -29,11 +29,11 @@ public class GoalController {
     }
 
 
-    //TODO-IMPLEMENT PRMESTI VO USER CONTROLLER
+
 
     @PostMapping
     public ResponseEntity<Goal> createGoal(@Valid @RequestBody GoalDto goalDto) {
-        Goal goal=this.goalService.saveGoal(goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale());
+        Goal goal=this.goalService.saveGoal(goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale(), goalDto.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(goal);
 
     }
@@ -54,7 +54,7 @@ public class GoalController {
     public ResponseEntity<Goal> deleteGoalById(@PathVariable Long id) {
         this.goalService.deleteGoal(id);
         if(!this.goalService.findById(id).isPresent()){
-            return ResponseEntity.ok(this.goalService.findById(id).get());
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }

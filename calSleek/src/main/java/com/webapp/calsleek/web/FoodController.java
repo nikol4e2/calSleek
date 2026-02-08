@@ -20,7 +20,7 @@ public class FoodController {
 
     private final FoodService foodService;
 
-    //TODO Create UserService
+
     private final UserService userService;
 
 
@@ -86,7 +86,7 @@ public class FoodController {
     }
 
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFood(@PathVariable Long id) {
         this.foodService.deleteById(id);
         return ResponseEntity.noContent().build();

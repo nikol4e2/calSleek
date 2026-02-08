@@ -2,10 +2,10 @@ package com.webapp.calsleek.web;
 
 
 import com.webapp.calsleek.model.User;
-import com.webapp.calsleek.model.dtos.secuirty.AuthResponse;
-import com.webapp.calsleek.model.dtos.secuirty.LoginRequest;
-import com.webapp.calsleek.model.dtos.secuirty.RegisterRequest;
-import com.webapp.calsleek.model.dtos.secuirty.UserResponse;
+import com.webapp.calsleek.model.dtos.security.AuthResponse;
+import com.webapp.calsleek.model.dtos.security.LoginRequest;
+import com.webapp.calsleek.model.dtos.security.RegisterRequest;
+import com.webapp.calsleek.model.dtos.security.UserResponse;
 import com.webapp.calsleek.model.exceptions.InvalidUserCredentialsException;
 import com.webapp.calsleek.model.exceptions.PasswordsDoNotMatchException;
 import com.webapp.calsleek.model.exceptions.UserNameAlreadyExists;
@@ -66,7 +66,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication auth) {
-        if(auth==null || !(auth.getPrincipal() instanceof User))
+        if(auth==null || !(auth.getPrincipal() instanceof UserPrincipal))
         {
             return ResponseEntity.status(401).build();
         }

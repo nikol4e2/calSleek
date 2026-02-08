@@ -1,4 +1,4 @@
-package com.webapp.calsleek.model.dtos.secuirty;
+package com.webapp.calsleek.model.dtos.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

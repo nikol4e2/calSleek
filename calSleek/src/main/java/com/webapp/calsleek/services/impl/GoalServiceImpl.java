@@ -6,28 +6,32 @@ import com.webapp.calsleek.model.enums.GoalType;
 import com.webapp.calsleek.model.exceptions.GoalNotFoundException;
 import com.webapp.calsleek.repositories.GoalRepository;
 import com.webapp.calsleek.services.GoalService;
+import com.webapp.calsleek.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class GoalServiceImpl implements GoalService {
-    private GoalRepository goalRepository;
+    private final GoalRepository goalRepository;
+    private final UserService userService;
 
 
-    public GoalServiceImpl(GoalRepository goalRepository) {
+    public GoalServiceImpl(GoalRepository goalRepository, UserService userService) {
         this.goalRepository = goalRepository;
+        this.userService = userService;
     }
 
 
     @Override
-    public Goal saveGoal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale) {
+    public Goal saveGoal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale, Long userId) {
         if(!(weight > 20 && height > 100 && age>10))
         {
             throw new IllegalArgumentException("Invalid arguments passed to saveGoal");
         }
 
         Goal goal=new Goal(activityLevel,weight,height,age,goalType,isMale);
+        this.userService.addGoalToUser(userId, goal);
         return this.goalRepository.save(goal);
     }
 
@@ -40,6 +44,7 @@ public class GoalServiceImpl implements GoalService {
         goal.setAge(age);
         goal.setGoalType(goalType);
         goal.setIsMale(isMale);
+        goal.calculateCalories();
         // TODO->Make this function in goal class : goal.updateGoal();
         return this.goalRepository.save(goal);
     }

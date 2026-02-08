@@ -3,6 +3,7 @@ package com.webapp.calsleek.services;
 import com.webapp.calsleek.model.DailyMacros;
 import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,4 +20,6 @@ public interface DailyMacrosService {
     Optional<DailyMacros> findById(Long id);
     void deleteById(Long id);
     List<FoodEntry> getFoodEntriesForUserAndDate(Long userId, LocalDateTime date);
+
+    DailyMacros findByUserIdAndDate(Long userId, LocalDateTime dateTime);
 }

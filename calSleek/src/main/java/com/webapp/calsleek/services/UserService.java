@@ -1,6 +1,7 @@
 package com.webapp.calsleek.services;
 
 import com.webapp.calsleek.model.DailyMacros;
+import com.webapp.calsleek.model.Goal;
 import com.webapp.calsleek.model.User;
 
 import java.util.Optional;
@@ -12,4 +13,5 @@ public interface UserService {
     Optional<User> findByUsername(String username);
     Optional<User> findById(Long id);
     void addDailyMacrosToUser(Long userId, DailyMacros dailyMacros);
+    void addGoalToUser(Long userId, Goal goal);
 }

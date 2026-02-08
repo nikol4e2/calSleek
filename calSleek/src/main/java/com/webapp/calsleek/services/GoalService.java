@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface GoalService {
 
-    Goal saveGoal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale);
+    Goal saveGoal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale, Long userId);
     Goal editGoal(Long id, ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale);
     Optional<Goal> findById(Long id);
     void deleteGoal(Long id);

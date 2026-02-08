@@ -33,10 +33,7 @@ public class ExerciseController {
     @GetMapping("/{id}")
     public ResponseEntity<Exercise> getExerciseById(@PathVariable Long id) {
         Optional<Exercise> exercise = exerciseService.getExerciseById(id);
-        if (exercise.isPresent()) {
-            return new ResponseEntity<>(exercise.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return exercise.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 

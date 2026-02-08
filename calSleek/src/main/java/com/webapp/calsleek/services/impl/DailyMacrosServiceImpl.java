@@ -6,7 +6,10 @@ import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.repositories.DailyMacrosRepository;
 import com.webapp.calsleek.services.DailyMacrosService;
+import com.webapp.calsleek.services.ExerciseLogService;
+import com.webapp.calsleek.services.FoodEntryService;
 import com.webapp.calsleek.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,13 +22,16 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
 
     private final DailyMacrosRepository dailyMacrosRepository;
     private final UserService userService;
+    private final ExerciseLogService exerciseLogService;
+    private final FoodEntryService foodEntryService;
 
 
-    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository,UserService userService) {
+    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService) {
         this.dailyMacrosRepository = dailyMacrosRepository;
         this.userService = userService;
+        this.exerciseLogService = exerciseLogService;
+        this.foodEntryService = foodEntryService;
     }
-
 
     @Override
     public DailyMacros save(LocalDateTime date, Long userId) {
@@ -55,6 +61,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     public void removeFoodEntry(Long dailyMacrosId, Long foodEntryId) {
         DailyMacros dailyMacros = this.dailyMacrosRepository.findById(dailyMacrosId).orElseThrow(()->new RuntimeException("Daily Macros not found"));
         dailyMacros.removeFoodEntry(foodEntryId);
+        this.foodEntryService.deleteById(foodEntryId);
         this.dailyMacrosRepository.save(dailyMacros);
     }
 
@@ -69,6 +76,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     public void removeExerciseLog(Long dailyMacrosId, Long exerciseLogId) {
         DailyMacros dailyMacros = this.dailyMacrosRepository.findById(dailyMacrosId).orElseThrow(()->new RuntimeException("Daily Macros not found"));
         dailyMacros.removeExerciseLog(exerciseLogId);
+        exerciseLogService.delete(exerciseLogId);
         this.dailyMacrosRepository.save(dailyMacros);
     }
 
@@ -93,5 +101,14 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
                 .findByUser_IdAndDateBetween(userId, startOfDay, endOfDay)
                 .map(DailyMacros::getFoodEntries)
                 .orElse(List.of());
+    }
+
+
+    @Override
+    public DailyMacros findByUserIdAndDate(Long userId, LocalDateTime dateTime) {
+        LocalDateTime startOfDay = dateTime.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = dateTime.toLocalDate().atTime(23, 59, 59, 999_999_999);
+        DailyMacros dailyMacros=this.dailyMacrosRepository.findByUser_IdAndDateBetween(userId,startOfDay,endOfDay).orElseThrow(()->new RuntimeException("Daily Macros not found"));
+        return dailyMacros;
     }
 }

@@ -10,6 +10,7 @@ import com.webapp.calsleek.services.MeasurementService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,8 @@ public class MeasurementServiceImpl implements MeasurementService {
 
         //TODO SORT THE MEASUREMENTS BY DATE/TIME
         User user=userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        return user.getMeasurements();
+        return user.getMeasurements().stream()
+                .sorted(Comparator.comparing(Measurement::getDate).reversed())
+                .toList();
     }
 }

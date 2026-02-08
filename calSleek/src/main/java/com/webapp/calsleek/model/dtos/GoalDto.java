@@ -21,4 +21,5 @@ public class GoalDto {
     private int age;
     private Boolean isMale;
     private GoalType goalType;
+    private Long userId;
 }

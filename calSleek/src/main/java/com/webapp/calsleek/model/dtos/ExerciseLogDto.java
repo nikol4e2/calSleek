@@ -13,5 +13,6 @@ public class ExerciseLogDto {
     private Long id;
     private Long exerciseId;
     private int durationInMinutes;
+    private Long dailyMacrosId;
 
 }

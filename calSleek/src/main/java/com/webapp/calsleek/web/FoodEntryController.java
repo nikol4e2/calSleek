@@ -4,6 +4,7 @@ import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.model.dtos.FoodEntryDto;
 import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.FoodEntryService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,36 +31,16 @@ public class FoodEntryController {
         return this.foodEntryService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-//    @GetMapping("/user/{userId}")
-//    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId, @RequestParam LocalDateTime date) {
-//        List<FoodEntry> foodEntries=this.foodEntryService.getAllForUserAndDate(userId,date);
-//        if(foodEntries.isEmpty())
-//            return ResponseEntity.notFound().build();
-//        return ResponseEntity.ok(foodEntries);
-//    }
-
-
-
-    // TODO FIND A SOLUTION HOW TO ADD THE ENTRY TO THE DAILYMACROS
-    @PostMapping
-    public ResponseEntity<FoodEntry> createFoodEntry(@RequestBody FoodEntryDto foodEntryDto) {
-
-        if (foodEntryDto.getDailyMacrosId() == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        FoodEntry foodEntry = this.foodEntryService.save(
-                foodEntryDto.getCategory(),
-                foodEntryDto.getFood(),
-                foodEntryDto.getGrams()
-        );
-
-        this.dailyMacrosService.addFoodEntry(foodEntryDto.getDailyMacrosId(), foodEntry);
-
-        return ResponseEntity.ok(foodEntry);
-
-
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDateTime date) {
+        LocalDateTime dateTime=date.toLocalDate().atStartOfDay();
+        List<FoodEntry> foodEntries=dailyMacrosService.getFoodEntriesForUserAndDate(userId, dateTime);
+        return ResponseEntity.ok(foodEntries);
     }
+
+
+
+
 
 
     @PutMapping("/{id}")
