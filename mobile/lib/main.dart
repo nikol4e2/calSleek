@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/login_screen.dart';
+
+import "utils/storage.dart";
 
 void main() {
   runApp(const MyApp());
@@ -8,15 +12,31 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
 
+  Future<bool> isLoggedIn() async{
+    final token=await Storage.getToken();
+    return token !=null;
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+      debugShowCheckedModeBanner: false,
+      title: 'calSleek',
+      home: FutureBuilder(future: isLoggedIn(), builder:
+      (context,snapshot){
+        if(!snapshot.hasData)
+          {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator(),),
+            );
+          }
+        return snapshot.data! ? const HomeScreen() : const LoginScreen();
+      }
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
