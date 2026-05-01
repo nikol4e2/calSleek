@@ -26,6 +26,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'calSleek',
+      theme: ThemeData(
+        fontFamily: 'SFPro',
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFFF2D55),
+        )
+      ),
       home: FutureBuilder(future: isLoggedIn(), builder:
       (context,snapshot){
         if(!snapshot.hasData)
