@@ -60,9 +60,20 @@ class _HomeScreenState extends State<HomeScreen> {
       body: data == null
       ? const Center(child: CircularProgressIndicator(),)
       : Center(
-        child: Text(
-          "Calories: ${data}!['totalCalories'] ?? 0 ",
-          style: const TextStyle(fontSize: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Daily Goal",style: TextStyle(fontSize: 20),),
+            const SizedBox(height: 10,),
+
+
+            Text(
+              "${data!['user']['goal']['calories']} kcal",
+              style: const TextStyle(
+                  fontSize: 36, fontWeight: FontWeight.bold),
+            ),
+
+          ],
         ),
       ),
     );

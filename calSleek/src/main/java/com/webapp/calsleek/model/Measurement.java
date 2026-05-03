@@ -14,6 +14,7 @@ public class Measurement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime date;
+    @Column(name = "measurement_value")
     private float value; //in kgs
 
     @ManyToOne

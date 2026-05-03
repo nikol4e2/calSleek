@@ -5,8 +5,8 @@ import '../utils/storage.dart';
 
 
 class ApiService {
-  //TODO add url
-  final String baseUrl= "";
+
+  final String baseUrl= "http://10.0.2.2:8080/api";
 
   Future<Map<String,dynamic>> getDailyMacros(int userId) async {
     final token = await Storage.getToken();
@@ -21,7 +21,9 @@ class ApiService {
 
     if(res.statusCode==200)
       {
+        print(res.body);
         return jsonDecode(res.body);
+
       }else
         {
           throw Exception("Failed to load macros");

@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 class AuthService{
 
 
-  //TODO add URL
-  final String baseUrl="";
+
+  final String baseUrl="http://10.0.2.2:8080/api/auth";
 
   Future<Map<String,dynamic>> login(String username, String password) async {
     final res = await http.post(
@@ -16,12 +16,13 @@ class AuthService{
         "username": username,
         "password": password,
       }),
-    );
+    ).timeout(const Duration(seconds: 10));
 
 
     if(res.statusCode==200){
       return jsonDecode(res.body);
     }else{
+
       throw Exception("Login failed");
       }
   }
