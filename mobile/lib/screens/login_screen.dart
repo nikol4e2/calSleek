@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/main_screen.dart';
+import 'package:mobile/screens/register_screen.dart';
 import 'package:mobile/utils/storage.dart';
 
 import '../services/auth_service.dart';
@@ -34,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
       Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_)=> const HomeScreen()),
+        MaterialPageRoute(builder: (_)=> const RegisterScreen()),
       );
 
 

@@ -14,10 +14,13 @@ class ApiService {
 
     final res = await http.get(
       Uri.parse("$baseUrl/daily-macros/$userId?date=$today"),
+
       headers: {
         "Authorization": "Bearer $token",
       },
     );
+
+    print("$baseUrl/daily-macros/$userId?date=$today");
 
     if(res.statusCode==200)
       {

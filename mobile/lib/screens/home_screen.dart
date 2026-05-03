@@ -59,23 +59,54 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: data == null
       ? const Center(child: CircularProgressIndicator(),)
-      : Center(
+      : Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(colors:
+          [Color(0xFF0F0F0F), Color(0xFF1C1C1C)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Daily Goal",style: TextStyle(fontSize: 20),),
-            const SizedBox(height: 10,),
+            const Text("Today's Goal", style: TextStyle(fontSize: 22,color: Colors.white70, fontWeight: FontWeight.w500),),
 
+            const SizedBox(height: 25,),
 
-            Text(
-              "${data!['user']['goal']['calories']} kcal",
-              style: const TextStyle(
-                  fontSize: 36, fontWeight: FontWeight.bold),
-            ),
+            Container(
+              height: 180,
+              width: 180,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(colors: [Colors.redAccent, Colors.deepOrange], begin: Alignment.topLeft, end: Alignment.bottomRight),
 
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.redAccent.withOpacity(0.4),
+                      blurRadius: 25,
+                      spreadRadius: 5
+                    )
+                  ],
+                ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("CALORIES", style: TextStyle(color: Colors.white70, fontSize: 20, letterSpacing: 1.2, fontWeight: FontWeight.bold),),
+                    
+                    const SizedBox(height: 8,),
+                    
+                    Text("${data!['user']['goal']['calories']}",style: TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),)
+                    
+                  ],
+                ),
+              ),
+            )
           ],
         ),
-      ),
-    );
+        )
+      );
+
   }
 }
