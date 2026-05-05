@@ -33,10 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       await Storage.saveToken(res['token']);
+      await Storage.saveUserId(res['userId']);
 
 
       Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_)=> const RegisterScreen()),
+        MaterialPageRoute(builder: (_)=> const MainScreen()),
       );
 
 
@@ -135,18 +136,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20,),
                   
                   Center(
-                    child: RichText(
-                        text: const TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(color: Colors.grey),
-                          children: [
-                            TextSpan(
-                              text: "Sign up",
-                              style: TextStyle(color: Color(0xFFFF2D55)
-                              ),
-                            )
-                          ]
-                        )
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> const RegisterScreen()));
+                      },
+                      child: RichText(
+                          text: const TextSpan(
+                            text: "Don't have an account? ",
+                            style: TextStyle(color: Colors.grey),
+                            children: [
+                              TextSpan(
+                                text: "Sign up",
+                                style: TextStyle(color: Color(0xFFFF2D55)
+                                ),
+                              )
+                            ]
+                          )
+                      ),
                     ),
                   )
 

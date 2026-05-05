@@ -13,16 +13,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+
+
   final api=ApiService();
   Map<String, dynamic>? data;
 
-  final int userId=1; //hardcoded
+  int? userId;
+
 
 
   @override
   void initState() {
 
     super.initState();
+    init();
+  }
+
+  void init() async {
+    userId = await Storage.getUserId();
     load();
   }
 

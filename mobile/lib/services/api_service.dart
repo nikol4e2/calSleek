@@ -8,7 +8,7 @@ class ApiService {
 
   final String baseUrl= "http://10.0.2.2:8080/api";
 
-  Future<Map<String,dynamic>> getDailyMacros(int userId) async {
+  Future<Map<String,dynamic>> getDailyMacros(userId) async {
     final token = await Storage.getToken();
     final today = DateTime.now().toIso8601String().split("T")[0];
 

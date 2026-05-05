@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/goal_onboarding_screen.dart';
+import 'package:mobile/services/auth_service.dart';
 
 import '../AppColors.dart';
+import '../utils/storage.dart';
 
 
 
@@ -24,56 +26,83 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final repeatPasswordController = TextEditingController();
 
   bool loading = false;
+  final authService= AuthService();
+  bool validate(){
+    final email=emailController.text.trim();
+    final password=passwordController.text.trim();
+    final repeat=repeatPasswordController.text.trim();
 
-  void register() async{
-    final username= usernameController.text.trim();
-    final firstName = firstNameController.text.trim();
-    final lastName= lastNameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    final repeatPassword = repeatPasswordController.text.trim();
-
-    if(username.isEmpty || firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty || repeatPassword.isEmpty)
+    if(email.isEmpty || password.isEmpty || repeat.isEmpty || usernameController.text.isEmpty || firstNameController.text.isEmpty || lastNameController.text.isEmpty)
       {
-        return;
+        showError("All field are required");
+        return false;
       }
 
+    if(!email.contains("@")){
+      showError("Invalid email");
+      return false;
+    }
 
-    setState(() {
-      loading=true;
-    });
+    if(password.length<6){
+      showError("Password too short");
+      return false;
+    }
 
-    try{
-      //TODO API CALL
+    if(password!=repeat)
+      {
+        showError("Passwords do not match!");
+        return false;
+      }
 
-      final body = {
-        "username": username,
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "password": password,
-        "repeatPassword": repeatPassword,
-      };
+    return true;
+  }
 
-      print(body);
 
-      await Future.delayed(const Duration(seconds: 1));
+  void showError(String msg)
+  {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: AppColors.primaryRed,content: Text(msg)));
+  }
 
-      if(!mounted) return;
+  void register() async {
+    if (!validate()) return;
 
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_)=> const GoalOnboardingScreen())
+    setState(() => loading = true);
+
+    try {
+      final username = usernameController.text.trim();
+      final firstName = firstNameController.text.trim();
+      final lastName = lastNameController.text.trim();
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+      final repeatPassword = repeatPasswordController.text.trim();
+
+      final response = await authService.register(
+        username,
+        firstName,
+        lastName,
+        email,
+        password,
+        repeatPassword,
       );
 
 
-    } catch (e)
-    {
-      print(e);
+      final loginResponse = await authService.login(username, password);
+      await Storage.saveToken(loginResponse["token"]);
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const GoalOnboardingScreen(),
+        ),
+      );
+
+    } catch (e) {
+      showError(e.toString());
     }
 
-    setState(() {
-      loading=false;
-    });
+    setState(() => loading = false);
   }
 
 
