@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/goal_onboarding_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
 import 'package:mobile/screens/login_screen.dart';
+import 'package:mobile/screens/main_screen.dart';
 
 import "utils/storage.dart";
 
@@ -34,17 +36,18 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFFF2D55),
         )
       ),
-      home: FutureBuilder(future: isLoggedIn(), builder:
-      (context,snapshot){
-        if(!snapshot.hasData)
-          {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator(),),
-            );
-          }
-        return snapshot.data! ? const HomeScreen() : const LoginScreen();
-      }
-      ),
+      home: GoalOnboardingScreen(),
+      // home: FutureBuilder(future: isLoggedIn(), builder:
+      // (context,snapshot){
+      //   if(!snapshot.hasData)
+      //     {
+      //       return const Scaffold(
+      //         body: Center(child: CircularProgressIndicator(),),
+      //       );
+      //     }
+      //   return snapshot.data! ? const MainScreen() : const LoginScreen();
+      // }
+      // ),
     );
   }
 }
