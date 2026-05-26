@@ -1,10 +1,12 @@
 package com.webapp.calsleek.services.impl;
 
 import com.webapp.calsleek.model.Goal;
+import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.enums.ActivityLevel;
 import com.webapp.calsleek.model.enums.GoalType;
 import com.webapp.calsleek.model.exceptions.GoalNotFoundException;
 import com.webapp.calsleek.repositories.GoalRepository;
+import com.webapp.calsleek.repositories.UserRepository;
 import com.webapp.calsleek.services.GoalService;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.stereotype.Service;
@@ -15,22 +17,26 @@ import java.util.Optional;
 public class GoalServiceImpl implements GoalService {
     private final GoalRepository goalRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
 
-    public GoalServiceImpl(GoalRepository goalRepository, UserService userService) {
+    public GoalServiceImpl(GoalRepository goalRepository, UserService userService, UserRepository userRepository) {
         this.goalRepository = goalRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
     @Override
-    public Goal saveGoal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale, Long userId) {
+    public Goal saveGoal(Long userId,ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale) {
         if(!(weight > 20 && height > 100 && age>10))
         {
             throw new IllegalArgumentException("Invalid arguments passed to saveGoal");
         }
 
+        User user=userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
         Goal goal=new Goal(activityLevel,weight,height,age,goalType,isMale);
+        goal.setUser(user);
         this.userService.addGoalToUser(userId, goal);
         return this.goalRepository.save(goal);
     }
@@ -60,5 +66,10 @@ public class GoalServiceImpl implements GoalService {
         {
             this.goalRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public Optional<Goal> findByUserId(Long userId) {
+        return this.goalRepository.findTopByUserIdOrderByIdDesc(userId);
     }
 }

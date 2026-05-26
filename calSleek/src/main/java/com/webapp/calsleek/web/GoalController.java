@@ -29,11 +29,19 @@ public class GoalController {
     }
 
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Goal> getGoalByUserId(@PathVariable Long userId) {
+        return this.goalService.findByUserId(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
 
 
     @PostMapping
     public ResponseEntity<Goal> createGoal(@Valid @RequestBody GoalDto goalDto) {
-        Goal goal=this.goalService.saveGoal(goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale(), goalDto.getUserId());
+        Goal goal=this.goalService.saveGoal(goalDto.getUserId(),goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale());
         return ResponseEntity.status(HttpStatus.CREATED).body(goal);
 
     }

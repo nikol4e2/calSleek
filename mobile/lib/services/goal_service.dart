@@ -24,5 +24,27 @@ class GoalService {
     if (res.statusCode != 201) {
       throw Exception("Failed to create goal");
     }
+
+  }
+
+  Future<Map<String, dynamic>> getGoalByUserId(int userId) async{
+    final token = await Storage.getToken();
+
+    final res = await http.get(
+      Uri.parse("$baseUrl/user/$userId"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+
+      if (res.statusCode == 200)
+      {
+      return jsonDecode(res.body);
+      }else
+        throw Exception("Failed to load goal");
+
+
   }
 }

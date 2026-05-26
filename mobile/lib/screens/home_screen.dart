@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:mobile/services/goal_service.dart';
 import 'package:mobile/utils/storage.dart';
 import '../services/api_service.dart';
 import 'login_screen.dart';
@@ -16,9 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   final api=ApiService();
+  final goalApi=GoalService();
   Map<String, dynamic>? data;
 
-  int? userId;
+  late int userId;
 
 
 
@@ -30,16 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void init() async {
-    userId = await Storage.getUserId();
+    userId = await Storage.getUserId() ?? 0;
     load();
   }
 
 
   void load() async{
     try{
-      final res = await api.getDailyMacros(userId);
+
+
+      final res = await goalApi.getGoalByUserId(userId);
       setState(() {
         data=res;
+
       });
     }catch(e){
       print(e);
@@ -104,10 +109,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text("CALORIES", style: TextStyle(color: Colors.white70, fontSize: 20, letterSpacing: 1.2, fontWeight: FontWeight.bold),),
                     
                     const SizedBox(height: 8,),
-                    
-                    Text("${data!['user']['goal']['calories']}",style: TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),)
-                    
-                  ],
+
+                Text(
+                  "${data!['calories']}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                  ),
+
+                )],
                 ),
               ),
             )

@@ -36,18 +36,18 @@ class MyApp extends StatelessWidget {
           primary: Color(0xFFFF2D55),
         )
       ),
-      home: GoalOnboardingScreen(),
-      // home: FutureBuilder(future: isLoggedIn(), builder:
-      // (context,snapshot){
-      //   if(!snapshot.hasData)
-      //     {
-      //       return const Scaffold(
-      //         body: Center(child: CircularProgressIndicator(),),
-      //       );
-      //     }
-      //   return snapshot.data! ? const MainScreen() : const LoginScreen();
-      // }
-      // ),
+
+      home: FutureBuilder(future: isLoggedIn(), builder:
+      (context,snapshot){
+        if(!snapshot.hasData)
+          {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator(),),
+            );
+          }
+        return snapshot.data! ? const MainScreen() : const LoginScreen();
+      }
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import com.webapp.calsleek.model.DailySummary;
 import com.webapp.calsleek.repositories.DailySummaryRepository;
 import com.webapp.calsleek.services.DailySummaryService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class DailySummaryServiceImpl implements DailySummaryService {
     }
 
     @Override
-    public DailySummary save(LocalDateTime date, int totalCalories, int totalCarbs, int totalProteins, int totalFats, int totalCaloriesBurned) {
+    public DailySummary save(LocalDate date, int totalCalories, int totalCarbs, int totalProteins, int totalFats, int totalCaloriesBurned) {
         if(totalCalories < 0 && totalCarbs < 0 && totalProteins < 0 && totalFats < 0) {
             throw new IllegalArgumentException("Can't have less then zero values for calories, carbs, proteins or fats");
         }
@@ -27,7 +28,7 @@ public class DailySummaryServiceImpl implements DailySummaryService {
     }
 
     @Override
-    public DailySummary update(Long id, LocalDateTime date, int totalCalories, int totalCarbs, int totalProteins, int totalFats, int totalCaloriesBurned) {
+    public DailySummary update(Long id, LocalDate date, int totalCalories, int totalCarbs, int totalProteins, int totalFats, int totalCaloriesBurned) {
         if(this.dailySummaryRepository.existsById(id)) {
             DailySummary dailySummary = this.dailySummaryRepository.findById(id).get();
             dailySummary.setDate(date);

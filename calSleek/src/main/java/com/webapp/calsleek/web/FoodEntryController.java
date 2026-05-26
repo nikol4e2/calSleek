@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class FoodEntryController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDateTime date) {
-        LocalDateTime dateTime=date.toLocalDate().atStartOfDay();
-        List<FoodEntry> foodEntries=dailyMacrosService.getFoodEntriesForUserAndDate(userId, dateTime);
+    public ResponseEntity<List<FoodEntry>> findByUserId(@PathVariable Long userId,@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate date) {
+
+        List<FoodEntry> foodEntries=dailyMacrosService.getFoodEntriesForUserAndDate(userId, date);
         return ResponseEntity.ok(foodEntries);
     }
 

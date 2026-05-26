@@ -30,25 +30,70 @@ public class DailyMacrosController {
         this.exerciseLogService = exerciseLogService;
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<DailyMacros> createDailyMacros(@PathVariable Long userId, @RequestParam LocalDate date)
-    {
-        LocalDateTime dateTime=date.atStartOfDay();
-        DailyMacros dailyMacros=dailyMacrosService.save(dateTime,userId);
-        return ResponseEntity.ok(dailyMacros);
+//    @PostMapping("/{userId}")
+//    public ResponseEntity<DailyMacros> createDailyMacros(@PathVariable Long userId, @RequestParam LocalDate date)
+//    {
+//        LocalDateTime dateTime=date.atStartOfDay();
+//        DailyMacros dailyMacros=dailyMacrosService.save(dateTime,userId);
+//        return ResponseEntity.ok(dailyMacros);
+//    }
+//
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<DailyMacros> getDailyMacros(@PathVariable Long userId, @RequestParam LocalDate date) {
+//        LocalDateTime dateTime=date.atStartOfDay();
+//        DailyMacros dailyMacros=this.dailyMacrosService.findByUserIdAndDate(userId,dateTime);
+//        if(dailyMacros!=null)
+//            return ResponseEntity.ok(dailyMacros);
+//        return ResponseEntity.notFound().build();
+//    }
+//
+//
+//    // Implement get by DailyMacrosId
+//
+//
+//    @PostMapping("/{dailyMacrosId}/food-entries")
+//    public ResponseEntity<FoodEntry> addFoodEntry(@PathVariable Long dailyMacrosId, @RequestBody FoodEntryDto foodEntryDto) {
+//        FoodEntry foodEntry=this.foodEntryService.save(foodEntryDto.getCategory(),foodEntryDto.getFood(),foodEntryDto.getGrams());
+//        this.dailyMacrosService.addFoodEntry(dailyMacrosId,foodEntry);
+//        return ResponseEntity.ok(foodEntry);
+//    }
+//
+//    @DeleteMapping("/{dailyMacrosId}/food-entries/{foodEntryId}")
+//    public ResponseEntity<Void> removeFoodEntry(@PathVariable Long dailyMacrosId, @PathVariable Long foodEntryId) {
+//        dailyMacrosService.removeFoodEntry(dailyMacrosId,foodEntryId);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @PostMapping("/{dailyMacrosId}/exercises")
+//    public ResponseEntity<Void> addExerciseLog(@PathVariable Long dailyMacrosId,@RequestBody ExerciseLogDto exerciseLogDto) {
+//        ExerciseLog exerciseLog=this.exerciseLogService.save(exerciseLogDto.getExerciseId(),exerciseLogDto.getDurationInMinutes(),exerciseLogDto.getDailyMacrosId());
+//        this.dailyMacrosService.addExerciseLog(dailyMacrosId,exerciseLog);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @DeleteMapping("/{dailyMacrosId}/exercises/{exerciseLogId}")
+//    public ResponseEntity<Void> removeExerciseLog(
+//            @PathVariable Long dailyMacrosId,
+//            @PathVariable Long exerciseLogId
+//    ) {
+//        dailyMacrosService.removeExerciseLog(dailyMacrosId, exerciseLogId);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//
+//
+//
+//
+//
+
+
+
+    @GetMapping("/today/{userId}")
+    public ResponseEntity<DailyMacros> getToday(@PathVariable Long userId){
+        return ResponseEntity.ok(
+                dailyMacrosService.getOrCreateToday(userId)
+        );
     }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<DailyMacros> getDailyMacros(@PathVariable Long userId, @RequestParam LocalDate date) {
-        LocalDateTime dateTime=date.atStartOfDay();
-        DailyMacros dailyMacros=this.dailyMacrosService.findByUserIdAndDate(userId,dateTime);
-        if(dailyMacros!=null)
-            return ResponseEntity.ok(dailyMacros);
-        return ResponseEntity.notFound().build();
-    }
-
-    // Implement get by DailyMacrosId
-
 
     @PostMapping("/{dailyMacrosId}/food-entries")
     public ResponseEntity<FoodEntry> addFoodEntry(@PathVariable Long dailyMacrosId, @RequestBody FoodEntryDto foodEntryDto) {
@@ -58,32 +103,37 @@ public class DailyMacrosController {
     }
 
     @DeleteMapping("/{dailyMacrosId}/food-entries/{foodEntryId}")
-    public ResponseEntity<Void> removeFoodEntry(@PathVariable Long dailyMacrosId, @PathVariable Long foodEntryId) {
-        dailyMacrosService.removeFoodEntry(dailyMacrosId,foodEntryId);
+    public ResponseEntity<Void> removeFoodEntry(
+            @PathVariable Long dailyMacrosId,
+            @PathVariable Long foodEntryId
+    ) {
+        dailyMacrosService.removeFoodEntry(dailyMacrosId, foodEntryId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{dailyMacrosId}/exercises")
-    public ResponseEntity<Void> addExerciseLog(@PathVariable Long dailyMacrosId,@RequestBody ExerciseLogDto exerciseLogDto) {
-        ExerciseLog exerciseLog=this.exerciseLogService.save(exerciseLogDto.getExerciseId(),exerciseLogDto.getDurationInMinutes(),exerciseLogDto.getDailyMacrosId());
-        this.dailyMacrosService.addExerciseLog(dailyMacrosId,exerciseLog);
+    public ResponseEntity<Void> addExercise(
+            @PathVariable Long dailyMacrosId,
+            @RequestBody ExerciseLogDto dto
+    ) {
+        ExerciseLog log = exerciseLogService.save(
+                dto.getExerciseId(),
+                dto.getDurationInMinutes(),
+                dailyMacrosId
+        );
+
+        dailyMacrosService.addExerciseLog(dailyMacrosId, log);
+
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{dailyMacrosId}/exercises/{exerciseLogId}")
-    public ResponseEntity<Void> removeExerciseLog(
+    public ResponseEntity<Void> removeExercise(
             @PathVariable Long dailyMacrosId,
             @PathVariable Long exerciseLogId
     ) {
         dailyMacrosService.removeExerciseLog(dailyMacrosId, exerciseLogId);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
-
-
 
 }

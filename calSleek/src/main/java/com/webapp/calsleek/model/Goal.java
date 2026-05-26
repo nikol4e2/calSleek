@@ -1,5 +1,6 @@
 package com.webapp.calsleek.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webapp.calsleek.model.enums.ActivityLevel;
 import com.webapp.calsleek.model.enums.GoalType;
 import jakarta.persistence.*;
@@ -27,6 +28,11 @@ public class Goal {
     private Boolean isMale;
     @Enumerated(EnumType.STRING)
     private GoalType goalType;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
     public Goal(ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale) {

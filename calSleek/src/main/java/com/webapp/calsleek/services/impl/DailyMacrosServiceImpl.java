@@ -34,7 +34,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     }
 
     @Override
-    public DailyMacros save(LocalDateTime date, Long userId) {
+    public DailyMacros save(LocalDate date, Long userId) {
         User user=userService.findById(userId).orElseThrow(()->new RuntimeException("User Not Found"));
         DailyMacros dailyMacros = new DailyMacros(date,user);
         userService.addDailyMacrosToUser(userId,dailyMacros);
@@ -43,7 +43,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     }
 
     @Override
-    public DailyMacros edit(Long id, LocalDateTime date) {
+    public DailyMacros edit(Long id, LocalDate date) {
         DailyMacros dailyMacros = this.dailyMacrosRepository.findById(id).orElseThrow(()->new RuntimeException("Daily Macros not found"));
         dailyMacros.setDate(date);
         return this.dailyMacrosRepository.save(dailyMacros);
@@ -93,22 +93,49 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     }
 
     @Override
-    public List<FoodEntry> getFoodEntriesForUserAndDate(Long userId, LocalDateTime dateTime) {
-        LocalDateTime startOfDay = dateTime.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = dateTime.toLocalDate().atTime(23, 59, 59, 999_999_999);
+    public List<FoodEntry> getFoodEntriesForUserAndDate(Long userId, LocalDate date) {
+
 
         return dailyMacrosRepository
-                .findByUser_IdAndDateBetween(userId, startOfDay, endOfDay)
+                .findByUser_IdAndDate(userId, date)
                 .map(DailyMacros::getFoodEntries)
                 .orElse(List.of());
     }
 
 
     @Override
-    public DailyMacros findByUserIdAndDate(Long userId, LocalDateTime dateTime) {
-        LocalDateTime startOfDay = dateTime.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = dateTime.toLocalDate().atTime(23, 59, 59, 999_999_999);
-        DailyMacros dailyMacros=this.dailyMacrosRepository.findByUser_IdAndDateBetween(userId,startOfDay,endOfDay).orElseThrow(()->new RuntimeException("Daily Macros not found"));
-        return dailyMacros;
+    public DailyMacros findByUserIdAndDate(Long userId, LocalDate dateTime) {
+
+
+
+        return dailyMacrosRepository
+                .findByUser_IdAndDate(userId, dateTime)
+                .orElseGet(() -> {
+                    User user = userService.findById(userId)
+                            .orElseThrow();
+
+                    DailyMacros dm = new DailyMacros(dateTime, user);
+
+                    return dailyMacrosRepository.save(dm);
+                });
     }
+
+    @Override
+    public DailyMacros getOrCreateToday(Long userId) {
+
+        LocalDate today = LocalDate.now();
+
+        return dailyMacrosRepository
+                .findByUser_IdAndDate(userId, today)
+                .orElseGet(() -> {
+                    User user = userService.findById(userId)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+
+                    DailyMacros dailyMacros = new DailyMacros(today, user);
+
+                    return dailyMacrosRepository.save(dailyMacros);
+                });
+    }
+
+
 }

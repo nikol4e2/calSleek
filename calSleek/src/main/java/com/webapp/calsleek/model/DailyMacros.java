@@ -3,6 +3,7 @@ package com.webapp.calsleek.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class DailyMacros {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date;
+    private LocalDate date;
     @OneToMany(mappedBy = "dailyMacros", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodEntry> foodEntries;
     private int totalCalories;
@@ -41,7 +42,7 @@ public class DailyMacros {
 
     }
 
-    public DailyMacros(LocalDateTime date,User user) {
+    public DailyMacros(LocalDate date,User user) {
         this.date = date;
         this.exercises = new ArrayList<>();
         this.totalCalories = 0;
