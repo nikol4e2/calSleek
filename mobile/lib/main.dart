@@ -39,14 +39,32 @@ class MyApp extends StatelessWidget {
 
       home: FutureBuilder(future: isLoggedIn(), builder:
       (context,snapshot){
-        if(!snapshot.hasData)
-          {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator(),),
-            );
-          }
-        return snapshot.data! ? const MainScreen() : const LoginScreen();
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final loggedIn = snapshot.data!;
+
+        if (!loggedIn) {
+          return const LoginScreen();
+        }
+
+        return FutureBuilder(
+            future: Storage.getUserId(),
+            builder: (context, userSnap) {
+              if (!userSnap.hasData) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              final userId = userSnap.data;
+
+              return MainScreen(userId: userId!);
       }
+        );}
       ),
     );
   }

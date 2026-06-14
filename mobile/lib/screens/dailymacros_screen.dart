@@ -6,7 +6,8 @@ import '../utils/storage.dart';
 
 
 class DailyMacrosScreen extends StatefulWidget {
-  const DailyMacrosScreen({super.key});
+  const DailyMacrosScreen({super.key, required this.goal});
+  final Map<String, dynamic> goal;
 
   @override
   State<DailyMacrosScreen> createState() => _DailyMacrosScreenState();
@@ -15,6 +16,8 @@ class DailyMacrosScreen extends StatefulWidget {
 class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
 
   final service = DailymacrosService();
+
+
 
   Map<String, dynamic>? data;
 
@@ -111,6 +114,63 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
   }
 
   Widget section(String title, List foods, int macrosId){
-    return Column();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(color: Colors.white, fontSize: 18),),
+        const SizedBox(height: 10,),
+
+        ...foods.map((f)=>
+        Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white12,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text( "${f['food']} - ${f['grams']}g",
+            style: const TextStyle(color: Colors.white),),
+        )),
+        
+        const SizedBox(height: 10,),
+        ElevatedButton(onPressed: ()=>addFoodDialog(macrosId), child: const Text("Add food"))
+
+      ],
+    );
+  }
+
+  void addFoodDialog(int macrosId){
+    final foodController = TextEditingController();
+    final gramsController = TextEditingController();
+
+    showDialog(context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Add food"),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextField(
+                controller: foodController,
+                decoration: const InputDecoration(labelText: "Food"),
+              ),
+              TextField(
+                controller: gramsController,
+                decoration: const InputDecoration(labelText: "Grams"),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: ()=>Navigator.pop(context),child: Text("Cancel"),),
+
+            ElevatedButton(onPressed: () async {
+              await service.addFood(macrosId, {"food": foodController.text,
+    "grams": int.parse(gramsController.text),
+    "category": "BREAKFAST"});
+              Navigator.pop(context);
+              load();
+            }, child:const Text("Add") )
+            ],
+        ));
   }
 }

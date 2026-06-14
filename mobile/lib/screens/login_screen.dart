@@ -36,8 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
       await Storage.saveUserId(res['userId']);
 
 
+      final userId=res['userId'];
+
+
       Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (_)=> const MainScreen()),
+        MaterialPageRoute(builder: (_)=>  MainScreen(userId:userId)),
       );
 
 

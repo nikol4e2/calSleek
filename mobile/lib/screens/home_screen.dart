@@ -6,7 +6,11 @@ import '../services/api_service.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.goal});
+
+  final Map<String, dynamic> goal;
+
+
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -111,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 8,),
 
                 Text(
-                  "${data!['calories']}",
+                  "${widget.goal['calories']}",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 34,

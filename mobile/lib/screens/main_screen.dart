@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/dailymacros_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/services/goal_service.dart';
+
+import '../utils/storage.dart';
 
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, required this.userId});
+
+  final int userId;
+
+
+
+
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -13,13 +23,46 @@ class _MainScreenState extends State<MainScreen> {
 
   int currentIndex=0;
 
-  final List<Widget> pages= const[
-    HomeScreen(),
-    //add others
-  ];
+  Map<String, dynamic>? goal;
+  bool loading=false;
+
+  final List<Widget> pages= [];
+
+
+  void load() async {
+    final res = await GoalService().getGoalByUserId(widget.userId);
+
+    setState(() {
+      goal = res;
+      loading = false;
+    });
+  }
+
+  @override
+  void initState() {
+
+    super.initState();
+    loading=true;
+    load();
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+
+    if(loading){
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator(),),
+      );
+
+    }
+    final pages= [
+      HomeScreen(goal: goal!),
+      DailyMacrosScreen(goal: goal!),
+      const Placeholder(),
+      const Placeholder(),
+    ];
     return Scaffold(
       body: pages[currentIndex],
 
@@ -37,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
               currentIndex = index;
             });
           },
-          backgroundColor: const Color(0xFFFFFAFA),
+          backgroundColor: const Color(0xFF000000),
           selectedItemColor: Colors.redAccent,
           unselectedItemColor: Colors.white54,
           type: BottomNavigationBarType.fixed,

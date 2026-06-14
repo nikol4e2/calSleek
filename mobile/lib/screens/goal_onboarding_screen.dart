@@ -317,13 +317,13 @@ class _GoalOnboardingScreenState
         "userId": userId,
       };
 
-      await goalService.createGoal(body);
+      final goal=await goalService.createGoal(body);
 
       if (!mounted) return;
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const MainScreen()),
+        MaterialPageRoute(builder: (_) =>  MainScreen(userId: userId!,)),
       );
     } catch (e) {
       print(e);
