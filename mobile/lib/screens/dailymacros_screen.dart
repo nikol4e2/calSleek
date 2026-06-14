@@ -3,6 +3,7 @@ import 'package:mobile/AppColors.dart';
 
 import '../services/dailymacros_service.dart';
 import '../utils/storage.dart';
+import 'add_food_sheet.dart';
 
 
 class DailyMacrosScreen extends StatefulWidget {
@@ -140,37 +141,16 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
   }
 
   void addFoodDialog(int macrosId){
-    final foodController = TextEditingController();
-    final gramsController = TextEditingController();
-
-    showDialog(context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Add food"),
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextField(
-                controller: foodController,
-                decoration: const InputDecoration(labelText: "Food"),
-              ),
-              TextField(
-                controller: gramsController,
-                decoration: const InputDecoration(labelText: "Grams"),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: ()=>Navigator.pop(context),child: Text("Cancel"),),
-
-            ElevatedButton(onPressed: () async {
-              await service.addFood(macrosId, {"food": foodController.text,
-    "grams": int.parse(gramsController.text),
-    "category": "BREAKFAST"});
-              Navigator.pop(context);
-              load();
-            }, child:const Text("Add") )
-            ],
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => AddFoodSheet(
+          macrosId: macrosId,
+          onAdded: load,
         ));
   }
+
+
 }
+
