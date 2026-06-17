@@ -20,9 +20,12 @@ class Food {
       id: json['id'],
       name: json['name'],
       calories: json['calories'],
-      carbs: json['carbs'],
-      protein: json['protein'],
-      fat: json['fat'],
+
+      carbs: (json['carbs'] as num).toDouble(),
+      protein: (json['protein'] as num).toDouble(),
+
+      // 🔴 FIXED NAME + TYPE
+      fat: (json['fats'] as num).toDouble(),
     );
   }
 }
