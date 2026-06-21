@@ -1,5 +1,6 @@
 package com.webapp.calsleek.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webapp.calsleek.model.enums.TimeCategory;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -29,6 +30,7 @@ public class FoodEntry {
 
     @ManyToOne
     @JoinColumn(name = "daily_macros_id")
+    @JsonIgnore
     private DailyMacros dailyMacros;
 
 

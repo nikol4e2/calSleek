@@ -26,12 +26,24 @@ public class FoodEntryServiceImpl implements com.webapp.calsleek.services.FoodEn
 
 
     @Override
-    public FoodEntry save(TimeCategory category, Food food, int grams) {
+    public FoodEntry save(TimeCategory category, Long foodId, int grams) {
+        Food food = foodRepository.findById(foodId).orElseThrow(()->new RuntimeException("Food not found"));
         if(grams <= 0)
         {
             throw new IllegalArgumentException("Grams must be greater than 0");
         }
-        FoodEntry foodEntry = new FoodEntry(category, food, grams);
+        float multiplier= grams / 100.0f;
+
+        FoodEntry foodEntry = new FoodEntry();
+        foodEntry.setCategory(category);
+        foodEntry.setFood(food);
+        foodEntry.setGrams(grams);
+
+        foodEntry.setTotalCalories(Math.round(food.getCalories() * multiplier));
+        foodEntry.setTotalCarbs(Math.round(food.getCarbs() * multiplier));
+        foodEntry.setTotalProtein(Math.round(food.getProtein() * multiplier));
+        foodEntry.setTotalFats(Math.round(food.getFats() * multiplier));
+
         return foodEntryRepository.save(foodEntry);
     }
 

@@ -71,7 +71,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     if (selectedFood == null || grams <= 0) return;
 
     await macrosService.addFood(widget.macrosId, {
-      "food": selectedFood!.name,
+      "foodId": selectedFood!.id,
       "grams": grams,
       "category": "BREAKFAST"
     });

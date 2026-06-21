@@ -96,9 +96,18 @@ public class DailyMacrosController {
     }
 
     @PostMapping("/{dailyMacrosId}/food-entries")
-    public ResponseEntity<FoodEntry> addFoodEntry(@PathVariable Long dailyMacrosId, @RequestBody FoodEntryDto foodEntryDto) {
-        FoodEntry foodEntry=this.foodEntryService.save(foodEntryDto.getCategory(),foodEntryDto.getFood(),foodEntryDto.getGrams());
-        this.dailyMacrosService.addFoodEntry(dailyMacrosId,foodEntry);
+    public ResponseEntity<FoodEntry> addFoodEntry(
+            @PathVariable Long dailyMacrosId,
+            @RequestBody FoodEntryDto dto) {
+
+        FoodEntry foodEntry = foodEntryService.save(
+                dto.getCategory(),
+                dto.getFoodId(),
+                dto.getGrams()
+        );
+
+        dailyMacrosService.addFoodEntry(dailyMacrosId, foodEntry);
+
         return ResponseEntity.ok(foodEntry);
     }
 

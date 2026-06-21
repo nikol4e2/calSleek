@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface FoodEntryService {
 
-    FoodEntry save(TimeCategory category,Food food,int grams);
+    FoodEntry save(TimeCategory category,Long foodId,int grams);
     FoodEntry edit(Long id, TimeCategory category, int grams);
     Optional<FoodEntry> findById(Long id);
     void deleteById(Long id);
