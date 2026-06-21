@@ -189,35 +189,106 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     );
   }
 
-  Widget section(String title, List foods, int macrosId){
-
-    int totalCalories= foods.fold(0 ,
-          (int sum, f) => sum + (f['totalCalories'] ?? 0) as int
+  Widget section(String title, List foods, int macrosId) {
+    int totalCalories = foods.fold(
+      0,
+          (int sum, f) => sum + ((f['totalCalories'] ?? 0) as num).toInt(),
     );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: const TextStyle(color: Colors.white, fontSize: 18),),
-        const SizedBox(height: 10,),
-
-        ...foods.map((f) => Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white12,
-            borderRadius: BorderRadius.circular(12),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // HEADER
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "$totalCalories kcal",
+                style: const TextStyle(color: Colors.white54),
+              ),
+            ],
           ),
-          child: Text(
-            "${f['food']['name']} - ${f['grams']}g - ${f['totalCalories']} kcal",
-            style: const TextStyle(color: Colors.white),
+
+          const SizedBox(height: 12),
+
+          // ITEMS
+          if (foods.isEmpty)
+            const Text(
+              "No foods added",
+              style: TextStyle(color: Colors.white38),
+            )
+          else
+            ...foods.map((f) {
+              final food = f['food'];
+              final name = food != null ? food['name'] : "Unknown";
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.black26,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "$name",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    Text(
+                      "${f['grams']}g",
+                      style: const TextStyle(color: Colors.white54),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${f['totalCalories']} kcal",
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+          const SizedBox(height: 10),
+
+          // ADD BUTTON
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => addFoodDialog(macrosId),
+              icon: const Icon(Icons.add),
+              label: const Text("Add food"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
           ),
-        )),
-
-        const SizedBox(height: 10,),
-        ElevatedButton(onPressed: ()=>addFoodDialog(macrosId), child: const Text("Add food"))
-
-      ],
+        ],
+      ),
     );
   }
 
