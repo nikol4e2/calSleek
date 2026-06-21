@@ -133,6 +133,21 @@ public class DailyMacrosController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{dailyMacrosId}/food-entries/{foodEntryId}")
+    public ResponseEntity<Void> updateGrams(
+            @PathVariable Long dailyMacrosId,
+            @PathVariable Long foodEntryId,
+            @RequestParam int grams
+    ) {
+        dailyMacrosService.updateFoodEntryGrams(
+                dailyMacrosId,
+                foodEntryId,
+                grams
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/{dailyMacrosId}/exercises")
     public ResponseEntity<Void> addExercise(
             @PathVariable Long dailyMacrosId,

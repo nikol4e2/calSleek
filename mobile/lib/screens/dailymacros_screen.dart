@@ -47,6 +47,39 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     });
   }
 
+  
+  void editFoodDialog(int macrosId, Map<String, dynamic> foodEntry){
+    final controller = TextEditingController(
+      text: foodEntry['grams'].toString()
+    );
+    
+    showDialog(context: context, builder: (_)=>
+    AlertDialog(
+      title: const Text("Edit"),
+      content: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: const InputDecoration(
+          labelText: "Grams"
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: ()=> Navigator.pop(context), child: const Text("Cancel")),
+        ElevatedButton(onPressed: () async { 
+          final grams = int.tryParse(controller.text);
+          
+          if(grams==null || grams <=0) {
+            return;
+          }
+          
+          await service.updateFoodEntry(macrosId, foodEntry['id'], grams);
+          
+          load();
+        }, child: const Text("Save"))
+      ],
+    )
+    );
+  }
 
 
   @override
@@ -238,32 +271,73 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
               final food = f['food'];
               final name = food != null ? food['name'] : "Unknown";
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(12),
+              return Dismissible(
+                key: Key(f['id'].toString()),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "$name",
-                        style: const TextStyle(color: Colors.white),
+                  child: const Icon(Icons.delete,color: Colors.white,),
+
+                ),
+
+                onDismissed: (_) async {
+                  try {
+                    await service.deleteFoodEntry(
+                      macrosId,
+                      f['id'],
+                    );
+
+                    load();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Food removed"),
                       ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Error: $e"),
+                      ),
+                    );
+                  }
+                },
+                child: GestureDetector(
+                  onTap: ()=>editFoodDialog(macrosId, f),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Text(
-                      "${f['grams']}g",
-                      style: const TextStyle(color: Colors.white54),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "$name",
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        Text(
+                          "${f['grams']}g",
+                          style: const TextStyle(color: Colors.white54),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "${f['totalCalories']} kcal",
+                          style: const TextStyle(color: Colors.redAccent),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${f['totalCalories']} kcal",
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }),

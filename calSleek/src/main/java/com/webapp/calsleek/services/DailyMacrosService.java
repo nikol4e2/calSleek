@@ -24,4 +24,9 @@ public interface DailyMacrosService {
 
     DailyMacros findByUserIdAndDate(Long userId, LocalDate dateTime);
      DailyMacros getOrCreateToday(Long userId);
+     void updateFoodEntryGrams(
+            Long dailyMacrosId,
+            Long foodEntryId,
+            int grams
+    );
 }

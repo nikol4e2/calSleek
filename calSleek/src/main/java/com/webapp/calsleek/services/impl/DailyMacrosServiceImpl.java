@@ -5,6 +5,7 @@ import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.repositories.DailyMacrosRepository;
+import com.webapp.calsleek.repositories.FoodEntryRepository;
 import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.ExerciseLogService;
 import com.webapp.calsleek.services.FoodEntryService;
@@ -24,13 +25,15 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     private final UserService userService;
     private final ExerciseLogService exerciseLogService;
     private final FoodEntryService foodEntryService;
+    private final FoodEntryRepository foodEntryRepository;
 
 
-    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService) {
+    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService, FoodEntryRepository foodEntryRepository) {
         this.dailyMacrosRepository = dailyMacrosRepository;
         this.userService = userService;
         this.exerciseLogService = exerciseLogService;
         this.foodEntryService = foodEntryService;
+        this.foodEntryRepository = foodEntryRepository;
     }
 
     @Override
@@ -135,6 +138,58 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
                     return dailyMacrosRepository.save(dailyMacros);
                 });
     }
+
+    public void updateFoodEntryGrams(
+            Long dailyMacrosId,
+            Long foodEntryId,
+            int grams
+    ) {
+        DailyMacros dailyMacros =
+                dailyMacrosRepository.findById(dailyMacrosId)
+                        .orElseThrow();
+
+        FoodEntry entry =
+                foodEntryRepository.findById(foodEntryId)
+                        .orElseThrow();
+
+        dailyMacros.setTotalCalories(
+                dailyMacros.getTotalCalories()
+                        - entry.getTotalCalories());
+
+        dailyMacros.setTotalCarbs(
+                dailyMacros.getTotalCarbs()
+                        - entry.getTotalCarbs());
+
+        dailyMacros.setTotalProteins(
+                dailyMacros.getTotalProteins()
+                        - entry.getTotalProtein());
+
+        dailyMacros.setTotalFats(
+                dailyMacros.getTotalFats()
+                        - entry.getTotalFats());
+
+        entry.setGrams(grams);
+
+        dailyMacros.setTotalCalories(
+                dailyMacros.getTotalCalories()
+                        + entry.getTotalCalories());
+
+        dailyMacros.setTotalCarbs(
+                dailyMacros.getTotalCarbs()
+                        + entry.getTotalCarbs());
+
+        dailyMacros.setTotalProteins(
+                dailyMacros.getTotalProteins()
+                        + entry.getTotalProtein());
+
+        dailyMacros.setTotalFats(
+                dailyMacros.getTotalFats()
+                        + entry.getTotalFats());
+
+        foodEntryRepository.save(entry);
+        dailyMacrosRepository.save(dailyMacros);
+    }
+
 
 
 }

@@ -61,5 +61,41 @@ class DailymacrosService {
         throw Exception("Failed to add food");
       }
   }
+  Future<void> deleteFoodEntry(int macrosId, int foodEntryId) async {
+    final token = await Storage.getToken();
+
+    final res = await http.delete(
+      Uri.parse("$baseUrl/$macrosId/food-entries/$foodEntryId"),
+      headers: {
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (res.statusCode != 204) {
+      throw Exception("Failed to delete food entry");
+    }
+  }
+
+
+  Future<void> updateFoodEntry(
+      int macrosId,
+      int foodEntryId,
+      int grams,
+      ) async {
+    final token = await Storage.getToken();
+
+    final res = await http.patch(
+      Uri.parse(
+        "$baseUrl/$macrosId/food-entries/$foodEntryId?grams=$grams",
+      ),
+      headers: {
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception("Failed to update food entry");
+    }
+  }
 
 }
