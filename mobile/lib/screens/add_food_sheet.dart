@@ -83,114 +83,140 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.7,
-      minChildSize: 0.4,
-      maxChildSize: 0.95,
-      builder: (context, scrollController) {
-      return Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+    return Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
         ),
-        child: loading
-        ?const Center(child: CircularProgressIndicator(),)
-            :Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text("Add Food",style: TextStyle(color: Colors.white, fontSize: 18) ,),
-            const SizedBox(height: 10,),
-      
-      
-            //SEARCH
-            TextField(
-              controller: searchController,
-              onChanged: search,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: "Search food...",
-                hintStyle: TextStyle(color: Colors.white54)
-              ),
-            ),
-      
-            const SizedBox(height: 10,),
-      
-            //FOODS
-            SizedBox(
-              height: 220,
-              child: ListView.builder(
-                itemCount: foods.length,
-                itemBuilder: (_, i) {
-                  final f = foods[i];
-                  final selected = selectedFood == f;
-      
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() => selectedFood = f);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: selected
-                            ? Colors.redAccent
-                            : Colors.white10,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            f.name,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "${f.calories} kcal | P:${f.protein} C:${f.carbs} F:${f.fat}",
-                            style: const TextStyle(
-                                color: Colors.white54, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            // SELECTED FOOD
-            if (selectedFood != null) ...[
-              Text(
-                "Selected: ${selectedFood!.name}",
-                style: const TextStyle(color: Colors.white),
-              ),
-      
-              const SizedBox(height: 10),
-      
-              TextField(
-                controller: gramsController,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: "Grams",
-                  hintStyle: TextStyle(color: Colors.white54),
+      child: DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.7,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: loading
+          ?const Center(child: CircularProgressIndicator(),)
+              :Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-      
-              const SizedBox(height: 10),
-      
-              ElevatedButton(
-                onPressed: addFood,
-                child: const Text("Add"),
-              )
-            ]
-      
-      
-          ],
-        )
-      );}
+
+              const Text(
+                "Add Food",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10,),
+
+
+              //SEARCH
+              TextField(
+                controller: searchController,
+                onChanged: search,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: "Search food...",
+                  hintStyle: TextStyle(color: Colors.white54)
+                ),
+              ),
+
+              const SizedBox(height: 10,),
+
+              //FOODS
+              SizedBox(
+                height: 220,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: foods.length,
+                  itemBuilder: (_, i) {
+                    final f = foods[i];
+                    final selected = selectedFood == f;
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => selectedFood = f);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? Colors.redAccent
+                              : Colors.white10,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              f.name,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "${f.calories} kcal | P:${f.protein} C:${f.carbs} F:${f.fat}",
+                              style: const TextStyle(
+                                  color: Colors.white54, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              // SELECTED FOOD
+              if (selectedFood != null) ...[
+                Text(
+                  "Selected: ${selectedFood!.name}",
+                  style: const TextStyle(color: Colors.white),
+                ),
+
+                const SizedBox(height: 10),
+
+                TextField(
+                  controller: gramsController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    hintText: "Grams",
+                    hintStyle: TextStyle(color: Colors.white54),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                ElevatedButton(
+                  onPressed: addFood,
+                  child: const Text("Add"),
+                )
+              ]
+
+
+            ],
+          )
+        );}
+      ),
     );
   }
 }

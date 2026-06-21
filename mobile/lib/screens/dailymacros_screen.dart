@@ -75,6 +75,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
           await service.updateFoodEntry(macrosId, foodEntry['id'], grams);
           
           load();
+          Navigator.pop(context);
         }, child: const Text("Save"))
       ],
     )
@@ -122,6 +123,8 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
           padding: const EdgeInsets.all(16),
     child: Column(
     children: [
+      calendarStrip(),
+      const SizedBox(height: 12,),
       summaryCard(macros),
       const SizedBox(height: 20,),
       Expanded(child: foodSections(macros))
@@ -130,6 +133,74 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     ),
 
     );
+  }
+  
+  Widget calendarStrip(){
+    final today=DateTime.now();
+    
+    return SizedBox(
+      height: 70,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 14,
+        itemBuilder: (context,index){
+          final date = today.subtract(Duration(days: 4 - index));
+
+          final isSelected =
+              date.year == selectedDate.year &&
+                  date.month == selectedDate.month &&
+                  date.day == selectedDate.day;
+
+          return GestureDetector(
+            onTap: (){
+              setState(() {
+                selectedDate=date;
+                loading=true;
+              });
+              load();
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.redAccent : Colors.white10,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isSelected ? Colors.redAccent : Colors.white12,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${date.day}",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight:
+                      isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _weekday(date.weekday),
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _weekday(int day) {
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    return days[day - 1];
   }
   
   Widget summaryCard(Map macros){
@@ -223,10 +294,27 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
   }
 
   Widget section(String title, List foods, int macrosId) {
+
     int totalCalories = foods.fold(
       0,
           (int sum, f) => sum + ((f['totalCalories'] ?? 0) as num).toInt(),
     );
+
+    int totalCarbs = foods.fold(
+      0,
+          (int sum, f) => sum + ((f['totalCarbs'] ?? 0) as num).toInt(),
+    );
+
+    int totalProtein = foods.fold(
+      0,
+          (int sum, f) => sum + ((f['totalProtein'] ?? 0) as num).toInt(),
+    );
+
+    int totalFats = foods.fold(
+      0,
+          (int sum, f) => sum + ((f['totalFats'] ?? 0) as num).toInt(),
+    );
+
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -251,10 +339,22 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                "$totalCalories kcal",
-                style: const TextStyle(color: Colors.white54),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Text(
+                    "$totalCalories kcal",
+                    style: const TextStyle(color: Colors.white54, fontSize: 16),
+                  ),
+                  const SizedBox(width: 5,),
+                  Text(
+                    "C:$totalCarbs  P:$totalProtein  F:$totalFats",
+                    style: const TextStyle(color: Colors.white38, fontSize: 14),
+                  ),
+                ],
               ),
+
             ],
           ),
 
