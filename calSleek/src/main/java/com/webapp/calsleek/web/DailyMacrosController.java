@@ -95,6 +95,19 @@ public class DailyMacrosController {
         );
     }
 
+    @GetMapping("/date/{userId}")
+    public ResponseEntity<DailyMacros> getByDate(
+            @PathVariable Long userId,
+            @RequestParam String date) {
+
+        LocalDate parsedDate = LocalDate.parse(date);
+
+        return ResponseEntity.ok(
+                dailyMacrosService.findByUserIdAndDate(userId, parsedDate)
+        );
+    }
+
+
     @PostMapping("/{dailyMacrosId}/food-entries")
     public ResponseEntity<FoodEntry> addFoodEntry(
             @PathVariable Long dailyMacrosId,

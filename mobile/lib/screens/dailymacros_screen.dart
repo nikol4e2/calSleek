@@ -18,6 +18,8 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
 
   final service = DailymacrosService();
 
+  DateTime selectedDate=DateTime.now();
+
 
 
   Map<String, dynamic>? data;
@@ -31,13 +33,17 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     load();
   }
 
-  void load() async{
+  void load() async {
     final userId = await Storage.getUserId();
-    final res = await service.getToday(userId!);
+
+    final res = await service.getByDate(
+      userId!,
+      selectedDate,
+    );
 
     setState(() {
-      data=res;
-      loading=false;
+      data = res;
+      loading = false;
     });
   }
 
@@ -56,9 +62,29 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     return  Scaffold(
       backgroundColor: AppColors.background ,
         appBar: AppBar(
-        title: const Text("Daily Macros"),
-        backgroundColor: Colors.black,
-    ),
+          title: const Text("Daily Macros"),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              onPressed: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: selectedDate,
+                  firstDate: DateTime(2024),
+                  lastDate: DateTime.now(),
+                );
+
+                if (picked != null) {
+                  setState(() {
+                    selectedDate = picked;
+                    loading = true;
+                  });
+                  load();
+                }
+              },
+            )
+          ],
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16),
     child: Column(

@@ -23,6 +23,25 @@ class DailymacrosService {
       throw Exception("Failed to load daily macros");
     }
   }
+
+  Future<Map<String, dynamic>> getByDate(int userId, DateTime date) async{
+    final token= await Storage.getToken();
+    final formattedDate = date.toIso8601String().split("T")[0]; // yyyy-MM-dd
+    final res = await http.get(
+      Uri.parse("$baseUrl/date/$userId?date=$formattedDate"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body);
+    } else {
+      throw Exception("Failed to load daily macros by date");
+    }
+
+  }
   
   
   Future<void> addFood(int macrosId,Map<String,dynamic> body) async{

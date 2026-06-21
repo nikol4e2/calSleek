@@ -112,11 +112,10 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
                 .findByUser_IdAndDate(userId, dateTime)
                 .orElseGet(() -> {
                     User user = userService.findById(userId)
-                            .orElseThrow();
+                            .orElseThrow(() -> new RuntimeException("User not found"));
 
-                    DailyMacros dm = new DailyMacros(dateTime, user);
-
-                    return dailyMacrosRepository.save(dm);
+                    DailyMacros macros = new DailyMacros(dateTime, user);
+                    return dailyMacrosRepository.save(macros);
                 });
     }
 

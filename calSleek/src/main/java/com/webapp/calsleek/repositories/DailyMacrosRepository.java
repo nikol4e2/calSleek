@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface DailyMacrosRepository extends JpaRepository<DailyMacros, Long> {
     Optional<DailyMacros> findByUser_IdAndDate(Long userId, LocalDate date);
 
+
 }
