@@ -47,38 +47,258 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     });
   }
 
-  
-  void editFoodDialog(int macrosId, Map<String, dynamic> foodEntry){
+
+  void editFoodDialog(int macrosId, Map<String, dynamic> foodEntry) {
     final controller = TextEditingController(
-      text: foodEntry['grams'].toString()
+      text: foodEntry['grams'].toString(),
     );
-    
-    showDialog(context: context, builder: (_)=>
-    AlertDialog(
-      title: const Text("Edit"),
-      content: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(
-          labelText: "Grams"
-        ),
+
+    final food = foodEntry['food'];
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            int grams = int.tryParse(controller.text) ?? 0;
+
+            double multiplier = grams / 100;
+
+            int calories =
+            ((food['calories'] as num) * multiplier).round();
+
+            int carbs =
+            ((food['carbs'] as num) * multiplier).round();
+
+            int protein =
+            ((food['protein'] as num) * multiplier).round();
+
+            int fats =
+            ((food['fats'] as num) * multiplier).round();
+
+            return Dialog(
+              backgroundColor: const Color(0xFF1A1A1A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        food['name'],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: TextField(
+                          controller: controller,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          onChanged: (_) {
+                            setDialogState(() {});
+                          },
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            suffixText: "g",
+                            suffixStyle: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          quickGramButton(
+                            50,
+                            controller,
+                            setDialogState,
+                          ),
+                          quickGramButton(
+                            100,
+                            controller,
+                            setDialogState,
+                          ),
+                          quickGramButton(
+                            150,
+                            controller,
+                            setDialogState,
+                          ),
+                          quickGramButton(
+                            200,
+                            controller,
+                            setDialogState,
+                          ),
+                          quickGramButton(
+                            250,
+                            controller,
+                            setDialogState,
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: macroCard(
+                              "Calories",
+                              "$calories",
+                            ),
+                          ),
+                          Expanded(
+                            child: macroCard(
+                              "Protein",
+                              "${protein}g",
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: macroCard(
+                              "Carbs",
+                              "${carbs}g",
+                            ),
+                          ),
+                          Expanded(
+                            child: macroCard(
+                              "Fats",
+                              "${fats}g",
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (grams <= 0) return;
+
+                                await service.updateFoodEntry(
+                                  macrosId,
+                                  foodEntry['id'],
+                                  grams,
+                                );
+
+                                load();
+
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.redAccent,
+                              ),
+                              child: const Text("Save", style: TextStyle(color: Colors.white),),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget macroCard(String title, String value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(14),
       ),
-      actions: [
-        TextButton(onPressed: ()=> Navigator.pop(context), child: const Text("Cancel")),
-        ElevatedButton(onPressed: () async { 
-          final grams = int.tryParse(controller.text);
-          
-          if(grams==null || grams <=0) {
-            return;
-          }
-          
-          await service.updateFoodEntry(macrosId, foodEntry['id'], grams);
-          
-          load();
-          Navigator.pop(context);
-        }, child: const Text("Save"))
-      ],
-    )
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget quickGramButton(
+      int grams,
+      TextEditingController controller,
+      StateSetter setDialogState,
+      ) {
+    return ActionChip(
+      backgroundColor: Colors.white10,
+      label: Text(
+        "${grams}g",
+        style: const TextStyle(color: Colors.white),
+      ),
+      onPressed: () {
+        controller.text = grams.toString();
+        setDialogState(() {});
+      },
     );
   }
 
