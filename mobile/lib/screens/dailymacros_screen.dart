@@ -4,6 +4,7 @@ import 'package:mobile/AppColors.dart';
 import '../services/dailymacros_service.dart';
 import '../utils/storage.dart';
 import 'add_food_sheet.dart';
+import 'addexercise_sheet.dart';
 
 
 class DailyMacrosScreen extends StatefulWidget {
@@ -46,6 +47,8 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
       loading = false;
     });
   }
+  
+  
 
 
   void editFoodDialog(int macrosId, Map<String, dynamic> foodEntry) {
@@ -254,6 +257,95 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     );
   }
 
+  Widget exerciseSection(Map macros) {
+    List logs = macros['exercises'] ?? [];
+    int totalBurned = logs.fold<int>(
+      0,
+          (int sum, e) => sum + ((e['totalBurnedCalories'] ?? 0) as num).toInt(),
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Exercises",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              Text(
+                "-$totalBurned kcal",
+                style: const TextStyle(color: Colors.redAccent),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          if (logs.isEmpty)
+            const Text(
+              "No exercises added",
+              style: TextStyle(color: Colors.white38),
+            )
+          else
+            ...logs.map((e) {
+              final ex = e['exercise'];
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.black26,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      ex['name'],
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      "${e['durationInMinutes']} min",
+                      style: const TextStyle(color: Colors.white54),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+          const SizedBox(height: 10),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (_) => AddExerciseSheet(
+                    macrosId: macros['id'],
+                    onAdded: load,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.fitness_center),
+              label: const Text("Add exercise"),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget macroCard(String title, String value) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -347,7 +439,9 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
       const SizedBox(height: 12,),
       summaryCard(macros),
       const SizedBox(height: 20,),
-      Expanded(child: foodSections(macros))
+      Expanded(child: foodSections(macros)),
+      Column(children:[ exerciseSection(macros)])
+
     ],
     ),
     ),
@@ -660,7 +754,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                   ),
                 ),
               );
-            }),
+            },),
 
           const SizedBox(height: 10),
 
