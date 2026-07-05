@@ -6,10 +6,10 @@ import '../services/api_service.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.goal});
+  const HomeScreen({super.key, required this.goal, required this.onNavigate});
 
   final Map<String, dynamic> goal;
-
+  final Function(int index) onNavigate;
 
 
   @override
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? data;
 
   late int userId;
-
+  String? userName;
 
 
   @override
@@ -37,6 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void init() async {
     userId = await Storage.getUserId() ?? 0;
+    final name= await Storage.getUserName();
+    setState(() {
+      userName=name;
+    });
     load();
   }
 
@@ -75,60 +79,155 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: data == null
-      ? const Center(child: CircularProgressIndicator(),)
-      : Container(
-        width: double.infinity,
+          ? const Center(child: CircularProgressIndicator())
+          : Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(colors:
-          [Color(0xFF0F0F0F), Color(0xFF1C1C1C)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter),
+          gradient: LinearGradient(
+            colors: [Color(0xFF0F0F0F), Color(0xFF1C1C1C)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Today's Goal", style: TextStyle(fontSize: 22,color: Colors.white70, fontWeight: FontWeight.w500),),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            const SizedBox(height: 25,),
+              const SizedBox(height: 20),
 
-            Container(
-              height: 180,
-              width: 180,
+               Text(
+                userName != null ? "Hey $userName " : "Hey",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Here’s your daily overview",
+                style: TextStyle(color: Colors.white54),
+              ),
+
+              const SizedBox(height: 30),
+
+              /// MAIN STATUS CARD
+              Container(
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(colors: [Colors.redAccent, Colors.deepOrange], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white10,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
 
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.redAccent.withOpacity(0.4),
-                      blurRadius: 25,
-                      spreadRadius: 5
+                    const Text(
+                      "TODAY'S GOAL",
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontSize: 12,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      children: [
+                        SizedBox(width: 6),
+
+                        Text(
+                          "${widget.goal['calories']} kcal",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+
+                          ),
+
+                        ),
+                      ],
+                    ),
+
+
+
+
+
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+
+              const Text(
+                "Next step",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+
+              const SizedBox(height: 10),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.redAccent),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.restaurant, color: Colors.redAccent),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        "Log your next meal",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        widget.onNavigate(1);
+
+                      },
+                      child: const Text("OPEN"),
                     )
                   ],
                 ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("CALORIES", style: TextStyle(color: Colors.white70, fontSize: 20, letterSpacing: 1.2, fontWeight: FontWeight.bold),),
-                    
-                    const SizedBox(height: 8,),
+              ),
 
-                Text(
-                  "${widget.goal['calories']}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 20),
 
-                )],
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white10,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Text(
+                  "Consistency beats perfection. Even small tracking today matters.",
+                  style: TextStyle(color: Colors.white70, fontSize: 15, ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-            )
-          ],
+
+              const Spacer(),
+
+              const Center(
+                child: Text(
+                  "Stay disciplined.",
+                  style: TextStyle(color: Colors.white38, fontSize: 15),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
-        )
+      ),
       );
 
   }

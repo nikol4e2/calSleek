@@ -58,7 +58,11 @@ class _MainScreenState extends State<MainScreen> {
 
     }
     final pages= [
-      HomeScreen(goal: goal!),
+      HomeScreen(goal: goal!, onNavigate: (index){
+        setState(() {
+          currentIndex=index;
+        });
+      }),
       DailyMacrosScreen(goal: goal!),
       const Placeholder(),
       const Placeholder(),

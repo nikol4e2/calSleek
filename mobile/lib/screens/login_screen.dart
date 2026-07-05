@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       await Storage.saveToken(res['token']);
       await Storage.saveUserId(res['userId']);
+      await Storage.saveUserName(res['username']);
 
 
       final userId=res['userId'];
