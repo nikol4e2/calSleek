@@ -173,4 +173,15 @@ public class DailyMacrosController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{dailyMacrosId}/exercises/{exerciseLogId}")
+    public ResponseEntity<Void> updateExercise(
+            @PathVariable Long dailyMacrosId,
+            @PathVariable Long exerciseLogId,
+            @RequestParam int duration
+    ) {
+
+        dailyMacrosService.updateExerciseLog(dailyMacrosId, exerciseLogId, duration);
+        return ResponseEntity.ok().build();
+    }
+
 }

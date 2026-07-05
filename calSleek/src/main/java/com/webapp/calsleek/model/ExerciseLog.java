@@ -1,5 +1,6 @@
 package com.webapp.calsleek.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class ExerciseLog {
 
     @ManyToOne
     @JoinColumn(name = "daily_macros_id")
+    @JsonIgnore
     private DailyMacros dailyMacros;
 
 

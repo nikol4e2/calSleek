@@ -5,6 +5,8 @@ import com.webapp.calsleek.model.ExerciseLog;
 import com.webapp.calsleek.model.FoodEntry;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.repositories.DailyMacrosRepository;
+import com.webapp.calsleek.repositories.ExerciseLogRepository;
+import com.webapp.calsleek.repositories.ExerciseRepository;
 import com.webapp.calsleek.repositories.FoodEntryRepository;
 import com.webapp.calsleek.services.DailyMacrosService;
 import com.webapp.calsleek.services.ExerciseLogService;
@@ -12,6 +14,7 @@ import com.webapp.calsleek.services.FoodEntryService;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,14 +29,18 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     private final ExerciseLogService exerciseLogService;
     private final FoodEntryService foodEntryService;
     private final FoodEntryRepository foodEntryRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseLogRepository exerciseLogRepository;
 
 
-    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService, FoodEntryRepository foodEntryRepository) {
+    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService, FoodEntryRepository foodEntryRepository, ExerciseRepository exerciseRepository, ExerciseLogRepository exerciseLogRepository) {
         this.dailyMacrosRepository = dailyMacrosRepository;
         this.userService = userService;
         this.exerciseLogService = exerciseLogService;
         this.foodEntryService = foodEntryService;
         this.foodEntryRepository = foodEntryRepository;
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseLogRepository = exerciseLogRepository;
     }
 
     @Override
@@ -82,6 +89,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
         exerciseLogService.delete(exerciseLogId);
         this.dailyMacrosRepository.save(dailyMacros);
     }
+
 
     @Override
     public Optional<DailyMacros> findById(Long id) {
@@ -191,5 +199,33 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     }
 
 
+    @Override
+    public void updateExerciseLog(Long dailyMacrosId, Long exerciseLogId, int duration) {
+        DailyMacros macros=dailyMacrosRepository.findById(dailyMacrosId).orElseThrow();
 
+        ExerciseLog log=exerciseLogService.findById(exerciseLogId).orElseThrow();
+        log.setDurationInMinutes(duration);
+        log.setTotalBurnedCalories(duration*log.getExercise().getCaloriesBurnedPerMinute());
+        exerciseLogRepository.save(log);
+
+        recalculateMacros(macros);
+
+    }
+
+
+    private void recalculateMacros(DailyMacros macros) {
+
+        int totalFood = macros.getFoodEntries().stream()
+                .mapToInt(FoodEntry::getTotalCalories)
+                .sum();
+
+        int totalBurned = macros.getExercises().stream()
+                .mapToInt(ExerciseLog::getTotalBurnedCalories)
+                .sum();
+
+        macros.setTotalCalories(totalFood);
+        macros.setTotalBurnedCalories(totalBurned);
+
+        dailyMacrosRepository.save(macros);
+    }
 }

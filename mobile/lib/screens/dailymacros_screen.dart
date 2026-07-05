@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/AppColors.dart';
+import 'package:mobile/services/exercise_service.dart';
 
 import '../services/dailymacros_service.dart';
 import '../utils/storage.dart';
@@ -18,6 +19,7 @@ class DailyMacrosScreen extends StatefulWidget {
 class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
 
   final service = DailymacrosService();
+  final exerciseService = ExerciseService();
 
   DateTime selectedDate=DateTime.now();
 
@@ -300,25 +302,59 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
             ...logs.map((e) {
               final ex = e['exercise'];
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(12),
+              return Dismissible(
+                key: Key(e['id'].toString()),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      ex['name'],
-                      style: const TextStyle(color: Colors.white),
+                onDismissed: (_) async {
+                  try {
+                    await exerciseService.deleteExercise(
+                      macros['id'],
+                      e['id'],
+                    );
+
+                    load();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Exercise removed")),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error: $e")),
+                    );
+                  }
+                },
+                child: GestureDetector(
+                  onTap: () => editExerciseDialog(macros['id'], e),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    Text(
-                      "${e['durationInMinutes']} min",
-                      style: const TextStyle(color: Colors.white54),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          ex['name'],
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          "${e['durationInMinutes']} min",
+                          style: const TextStyle(color: Colors.white54),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               );
             }),
@@ -433,14 +469,17 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
-    child: Column(
+    child: ListView(
     children: [
       calendarStrip(),
       const SizedBox(height: 12,),
       summaryCard(macros),
       const SizedBox(height: 20,),
-      Expanded(child: foodSections(macros)),
-      Column(children:[ exerciseSection(macros)])
+      //Expanded(child: foodSections(macros)),
+      ...foodSections(macros),
+      //Column(children:[ exerciseSection(macros)])
+      exerciseSection(macros),
+      const SizedBox(height: 20,)
 
     ],
     ),
@@ -530,6 +569,14 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     int goalCarbs = widget.goal['carbs'] ?? 0;
     int goalFats = widget.goal['fats'] ?? 0;
 
+    int burnedCalories = (macros['exercises'] ?? []).fold<int>(
+      0,
+          (int sum, e) =>
+      sum + ((e['totalBurnedCalories'] ?? 0) as num).toInt(),
+    );
+
+    int netCalories = calories - burnedCalories;
+
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -546,7 +593,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
 
           const SizedBox(height: 12),
 
-          macroBar("Calories", calories, goalCalories),
+          macroBar("Calories", calories, goalCalories+burnedCalories),
           macroBar("Protein", protein, goalProtein),
           macroBar("Carbs", carbs, goalCarbs),
           macroBar("Fats", fats, goalFats),
@@ -581,7 +628,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
   }
 
 
-  Widget foodSections(Map macros) {
+  List<Widget> foodSections(Map macros) {
     List foods = macros['foodEntries'] ?? [];
 
     Map<String, List> grouped = {
@@ -597,14 +644,14 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
       grouped[cat]!.add(f);
     }
 
-    return ListView(
-      children: [
+    return
+       [
         section("Breakfast", grouped["BREAKFAST"]!, macros['id']),
         section("Lunch", grouped["LUNCH"]!, macros['id']),
         section("Dinner", grouped["DINNER"]!, macros['id']),
         section("Snacks", grouped["SNACKS"]!, macros['id']),
-      ],
-    );
+      ]
+    ;
   }
 
   Widget section(String title, List foods, int macrosId) {
@@ -789,6 +836,95 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
           macrosId: macrosId,
           onAdded: load,
         ));
+  }
+
+
+  void editExerciseDialog(int macrosId, Map<String, dynamic> log) {
+    final controller = TextEditingController(
+      text: log['durationInMinutes'].toString(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Dialog(
+              backgroundColor: const Color(0xFF1A1A1A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      log['exercise']['name'],
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    TextField(
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: "Minutes",
+                        hintStyle: TextStyle(color: Colors.white38),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("Cancel"),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final minutes =
+                                  int.tryParse(controller.text) ?? 0;
+
+                              if (minutes <= 0) return;
+
+                              await exerciseService.updateExercise(
+                                macrosId,
+                                log['id'],
+                                minutes,
+                              );
+
+                               load();
+
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Save"),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
 

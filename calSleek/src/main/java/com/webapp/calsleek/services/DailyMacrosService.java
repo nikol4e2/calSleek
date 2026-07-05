@@ -29,4 +29,6 @@ public interface DailyMacrosService {
             Long foodEntryId,
             int grams
     );
+
+    void updateExerciseLog(Long dailyMacrosId, Long exerciseLogId, int duration);
 }
