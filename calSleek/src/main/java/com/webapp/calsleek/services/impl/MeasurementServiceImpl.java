@@ -67,4 +67,10 @@ public class MeasurementServiceImpl implements MeasurementService {
                 .sorted(Comparator.comparing(Measurement::getDate).reversed())
                 .toList();
     }
+
+
+    @Override
+    public Measurement getLatest(Long userId) {
+        return measurementRepository.findFirstByUserIdOrderByDateDesc(userId).orElseThrow(()->new MeasurementNotFoundException(userId));
+    }
 }

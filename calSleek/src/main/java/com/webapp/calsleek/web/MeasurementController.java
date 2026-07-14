@@ -54,6 +54,20 @@ public class MeasurementController {
     }
 
 
+    //TODO IMPLEMENT !!!
+    @GetMapping("/user/{userId}/latest")
+    public ResponseEntity<Measurement> getLatest(@PathVariable Long userId) {
+        Measurement measurement =
+                measurementService.getLatest(userId);
+
+        if (measurement == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(measurement);
+    }
+
+
 
 
 

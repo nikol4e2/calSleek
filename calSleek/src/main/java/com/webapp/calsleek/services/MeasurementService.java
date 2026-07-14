@@ -14,4 +14,5 @@ public interface MeasurementService {
     Measurement editMeasurement(Long id, LocalDateTime time, float value);
     void deleteMeasurement(Long id);
     List<Measurement> getAllMeasurementsForUser(Long userId);
+    Measurement getLatest(Long userId);
 }
