@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile/services/goal_service.dart';
+import 'package:mobile/services/measurement_service.dart';
 import 'package:mobile/utils/storage.dart';
 import '../services/api_service.dart';
 import 'login_screen.dart';
@@ -22,10 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final api=ApiService();
   final goalApi=GoalService();
+  final measurementService = MeasurementService();
   Map<String, dynamic>? data;
 
   late int userId;
   String? userName;
+  Map<String, dynamic>? latestWeight;
 
 
   @override
@@ -42,6 +45,19 @@ class _HomeScreenState extends State<HomeScreen> {
       userName=name;
     });
     load();
+    loadLatestWeight();
+  }
+
+  void loadLatestWeight() async {
+    try {
+      final res = await measurementService.getLatest(userId);
+
+      setState(() {
+        latestWeight = res;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
 
@@ -160,7 +176,61 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
 
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: Colors.white10,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        const Text(
+                          "CURRENT WEIGHT",
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Text(
+                          latestWeight == null
+                              ? "-- kg"
+                              : "${latestWeight!['value']} kg",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.redAccent.withOpacity(0.2),
+                      ),
+                      child: const Icon(
+                        Icons.monitor_weight_outlined,
+                        color: Colors.redAccent,
+                        size: 32,
+                      ),
+                    )
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
 
 

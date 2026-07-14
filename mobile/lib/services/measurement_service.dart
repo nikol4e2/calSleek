@@ -84,5 +84,6 @@ class MeasurementService {
 
     if (res.statusCode != 204) {
       throw Exception("Failed to delete measurement");
+    }
   }
 }

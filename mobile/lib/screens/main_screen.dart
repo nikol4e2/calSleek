@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle),
-            label: "Add",
+            label: "Add Weight",
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),
