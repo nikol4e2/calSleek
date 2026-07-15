@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/AppColors.dart';
 import '../services/measurement_service.dart';
 import '../utils/storage.dart';
-
+import "package:fl_chart/fl_chart.dart";
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
 
@@ -81,6 +82,100 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
+  Widget weightChart(){
+    if(measurements.length<2)
+      {
+        return const Text("Add more measurements to see progress", style: TextStyle(color: Colors.white54),);
+      }
+
+    return Container(
+      height: 250,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(20),
+
+      ),
+
+      child: LineChart(
+        LineChartData(
+          gridData: const FlGridData(
+            show: false,
+          ),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                getTitlesWidget: (value,meta){
+                  return Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 12,
+                    ),
+                  );
+                }
+              )
+            ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value,meta){
+                      int index=value.toInt();
+
+                      if(index>=measurements.length){
+                        return const SizedBox();
+                      }
+
+                      return Text(
+                        measurements[index]['date'].toString().substring(5,10),
+                        style: const TextStyle(color: Colors.white54,
+                          fontSize: 10,
+                      ));
+                    }
+                  )
+                ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+
+          ),
+            borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              color: AppColors.chartLine,
+
+
+              isCurved: true,
+
+              spots: List.generate(
+                measurements.length,(index){
+                  return FlSpot(
+                    index.toDouble(), (measurements[index]['value'] as num).toDouble(),
+                  );
+              }
+              ),
+              barWidth: 2,
+
+              dotData: const FlDotData(
+                show: true,
+              ),
+
+              belowBarData: BarAreaData(
+                show: true
+              ),
+            )
+          ]
+        )
+      ),
+    );
+
+  }
+
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -121,7 +216,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       "Current weight",
                       style: TextStyle(color: Colors.white54),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Text(
                       "$currentWeight kg",
                       style: const TextStyle(
@@ -136,6 +231,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                           ? "${difference.abs()} kg lost"
                           : "+$difference kg gained",
                     ),
+
+                    const SizedBox(height: 20,),
+
+                    const Text("Weight progress",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),),
+
+                    const SizedBox(height: 10,),
+
+                    weightChart()
                   ],
                 ),
               ),
