@@ -62,10 +62,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     {
 
         //TODO SORT THE MEASUREMENTS BY DATE/TIME
-        User user=userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
-        return user.getMeasurements().stream()
-                .sorted(Comparator.comparing(Measurement::getDate).reversed())
-                .toList();
+        return measurementRepository.findAllByUserIdOrderByDateAsc(userId);
     }
 
 

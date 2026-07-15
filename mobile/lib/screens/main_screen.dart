@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/dailymacros_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/progress_screen.dart';
 import 'package:mobile/services/goal_service.dart';
 
 import '../utils/storage.dart';
@@ -64,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
         });
       }),
       DailyMacrosScreen(goal: goal!),
-      const Placeholder(),
+      ProgressScreen(),
       const Placeholder(),
     ];
     return Scaffold(
@@ -98,8 +99,8 @@ class _MainScreenState extends State<MainScreen> {
             label: "Diary",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle),
-            label: "Add Weight",
+            icon: Icon(Icons.show_chart),
+            label: "Progress",
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),

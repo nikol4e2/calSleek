@@ -13,4 +13,5 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
 
 
     Optional<Measurement> findFirstByUserIdOrderByDateDesc(Long userId);
+    List<Measurement> findAllByUserIdOrderByDateAsc(Long userId);
 }

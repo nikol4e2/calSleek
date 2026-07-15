@@ -25,11 +25,17 @@ public class MeasurementController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Measurement>> getAllMeasurementsForUser(@PathVariable Long userId) {
+    public ResponseEntity<List<MeasurementDto>> getAllMeasurementsForUser(@PathVariable Long userId) {
         if(!userService.findById(userId).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        List<Measurement> measurements = measurementService.getAllMeasurementsForUser(userId);
+        List<MeasurementDto> measurements= measurementService.getAllMeasurementsForUser(userId).stream().map(
+                m->new MeasurementDto(
+                        m.getId(),
+                        m.getDate(),
+                        m.getValue()
+                )
+        ).toList();
         return ResponseEntity.ok(measurements);
     }
 
@@ -56,15 +62,20 @@ public class MeasurementController {
 
     //TODO IMPLEMENT !!!
     @GetMapping("/user/{userId}/latest")
-    public ResponseEntity<Measurement> getLatest(@PathVariable Long userId) {
-        Measurement measurement =
-                measurementService.getLatest(userId);
+    public ResponseEntity<MeasurementDto> getLatest(@PathVariable Long userId) {
+        Measurement m = measurementService.getLatest(userId);
 
-        if (measurement == null) {
+        if (m == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(measurement);
+        return ResponseEntity.ok(
+                new MeasurementDto(
+                        m.getId(),
+                        m.getDate(),
+                        m.getValue()
+                )
+        );
     }
 
 
