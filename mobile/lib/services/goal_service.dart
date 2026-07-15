@@ -47,4 +47,23 @@ class GoalService {
 
 
   }
+
+  Future<Map<String,dynamic>> updateGoal(int id, Map<String,dynamic> body) async{
+    final token= await Storage.getToken();
+    final res = await http.put(
+      Uri.parse("$baseUrl/$id"),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode(body),
+    );
+
+
+    if(res.statusCode != 200){
+      throw Exception("Failed to update goal");
+    }
+
+    return jsonDecode(res.body);
+  }
 }

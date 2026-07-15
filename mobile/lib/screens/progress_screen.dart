@@ -274,7 +274,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
                   itemBuilder: (_, index) {
                     final m = measurements[index];
-                    print(m);
                     return Dismissible(
                       key: Key(m['id'].toString()),
 

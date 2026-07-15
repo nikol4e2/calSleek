@@ -3,6 +3,7 @@ package com.webapp.calsleek.services.impl;
 import com.webapp.calsleek.model.Goal;
 import com.webapp.calsleek.model.Measurement;
 import com.webapp.calsleek.model.User;
+import com.webapp.calsleek.model.dtos.UpdateGoalDto;
 import com.webapp.calsleek.model.enums.ActivityLevel;
 import com.webapp.calsleek.model.enums.GoalType;
 import com.webapp.calsleek.model.exceptions.GoalNotFoundException;
@@ -52,17 +53,36 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
-    public Goal editGoal(Long id, ActivityLevel activityLevel, float weight, int height, int age, GoalType goalType, Boolean isMale) {
-        Goal goal=this.goalRepository.findById(id).orElseThrow(()->new GoalNotFoundException());
-        goal.setActivityLevel(activityLevel);
-        goal.setWeight(weight);
-        goal.setHeight(height);
-        goal.setAge(age);
-        goal.setGoalType(goalType);
-        goal.setIsMale(isMale);
-        goal.calculateCalories();
-        // TODO->Make this function in goal class : goal.updateGoal();
-        return this.goalRepository.save(goal);
+    public Goal editGoal(Long id, UpdateGoalDto dto) {
+        Goal goal=goalRepository.findById(id).orElseThrow(()-> new RuntimeException("Goal not found"));
+
+
+        int calculatedCalories=  dto.getCarbs() * 4 +
+                dto.getProteins() * 4 +
+                dto.getFats() * 9;
+
+        if(calculatedCalories != dto.getCalories()){
+            throw new IllegalArgumentException(
+                    "Macros do not match calories"
+            );
+        };
+
+        goal.setActivityLevel(dto.getActivityLevel());
+        goal.setHeight(dto.getHeight());
+        goal.setAge(dto.getAge());
+        goal.setIsMale(dto.getIsMale());
+        goal.setGoalType(dto.getGoalType());
+
+        goal.setCalories(dto.getCalories());
+        goal.setCarbs(dto.getCarbs());
+        goal.setProteins(dto.getProteins());
+        goal.setFats(dto.getFats());
+
+
+        Measurement latest=measurementService.getLatest(goal.getUser().getId());
+        goal.setWeight(latest.getValue());
+
+        return goalRepository.save(goal);
     }
 
     @Override

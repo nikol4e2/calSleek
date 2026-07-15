@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/dailymacros_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
+import 'package:mobile/screens/profile_screen.dart';
 import 'package:mobile/screens/progress_screen.dart';
 import 'package:mobile/services/goal_service.dart';
 
@@ -66,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
       }),
       DailyMacrosScreen(goal: goal!),
       ProgressScreen(),
-      const Placeholder(),
+      ProfileScreen()
     ];
     return Scaffold(
       body: pages[currentIndex],

@@ -2,6 +2,7 @@ package com.webapp.calsleek.web;
 
 import com.webapp.calsleek.model.Goal;
 import com.webapp.calsleek.model.dtos.GoalDto;
+import com.webapp.calsleek.model.dtos.UpdateGoalDto;
 import com.webapp.calsleek.model.exceptions.GoalNotFoundException;
 import com.webapp.calsleek.services.GoalService;
 import jakarta.validation.Valid;
@@ -50,10 +51,14 @@ public class GoalController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Goal> updateGoal(@PathVariable Long id, @Valid @RequestBody GoalDto goalDto) {
-        Goal goal=this.goalService.findById(id).orElseThrow(()->new GoalNotFoundException());
-        this.goalService.editGoal(id,goalDto.getActivityLevel(),goalDto.getWeight(),goalDto.getHeight(),goalDto.getAge(),goalDto.getGoalType(),goalDto.getIsMale());
-        return ResponseEntity.ok(goal);
+    public ResponseEntity<Goal> updateGoal(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateGoalDto dto
+    ){
+
+        Goal updated = goalService.editGoal(id,dto);
+
+        return ResponseEntity.ok(updated);
     }
 
 
