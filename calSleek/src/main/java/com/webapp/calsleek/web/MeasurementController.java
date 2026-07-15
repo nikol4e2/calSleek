@@ -3,6 +3,7 @@ package com.webapp.calsleek.web;
 import com.webapp.calsleek.model.Measurement;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.dtos.MeasurementDto;
+import com.webapp.calsleek.model.dtos.MeasurementResponseDto;
 import com.webapp.calsleek.services.MeasurementService;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +26,24 @@ public class MeasurementController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<MeasurementDto>> getAllMeasurementsForUser(@PathVariable Long userId) {
+    public ResponseEntity<List<MeasurementResponseDto>> getAllMeasurementsForUser(
+            @PathVariable Long userId
+    ) {
+
         if(!userService.findById(userId).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        List<MeasurementDto> measurements= measurementService.getAllMeasurementsForUser(userId).stream().map(
-                m->new MeasurementDto(
-                        m.getId(),
-                        m.getDate(),
-                        m.getValue()
-                )
-        ).toList();
+
+        List<MeasurementResponseDto> measurements =
+                measurementService.getAllMeasurementsForUser(userId)
+                        .stream()
+                        .map(m -> new MeasurementResponseDto(
+                                m.getId(),
+                                m.getDate(),
+                                m.getValue()
+                        ))
+                        .toList();
+
         return ResponseEntity.ok(measurements);
     }
 
@@ -60,17 +68,15 @@ public class MeasurementController {
     }
 
 
-    //TODO IMPLEMENT !!!
     @GetMapping("/user/{userId}/latest")
-    public ResponseEntity<MeasurementDto> getLatest(@PathVariable Long userId) {
+    public ResponseEntity<MeasurementResponseDto> getLatest(
+            @PathVariable Long userId
+    ) {
+
         Measurement m = measurementService.getLatest(userId);
 
-        if (m == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         return ResponseEntity.ok(
-                new MeasurementDto(
+                new MeasurementResponseDto(
                         m.getId(),
                         m.getDate(),
                         m.getValue()

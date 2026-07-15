@@ -271,34 +271,108 @@ class _ProgressScreenState extends State<ProgressScreen> {
               Expanded(
                 child: ListView.builder(
                   itemCount: measurements.length,
+
                   itemBuilder: (_, index) {
                     final m = measurements[index];
+                    print(m);
+                    return Dismissible(
+                      key: Key(m['id'].toString()),
 
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white10,
-                        borderRadius: BorderRadius.circular(14),
+                      direction: DismissDirection.endToStart,
+
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+
+                        child: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${m['value']} kg",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+
+
+                      onDismissed: (_) async {
+
+                        try {
+
+                          await service.deleteMeasurement(
+                            m['id'],
+                          );
+
+
+                          load();
+
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Weight removed"),
                             ),
-                          ),
-                          Text(
-                            m['date'].toString().substring(0, 10),
-                            style: const TextStyle(
-                              color: Colors.white54,
+                          );
+
+
+                        } catch (e) {
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Error: $e"),
                             ),
-                          ),
-                        ],
+                          );
+
+                        }
+
+                      },
+
+
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+
+                        padding: const EdgeInsets.all(14),
+
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+
+
+                        child: Row(
+
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+
+
+                          children: [
+
+                            Text(
+                              "${m['value']} kg",
+
+                              style: const TextStyle(
+                                color: Colors.white,
+
+                                fontSize: 18,
+
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+
+                            Text(
+                              m['date']
+                                  .toString()
+                                  .substring(0, 10),
+
+                              style: const TextStyle(
+                                color: Colors.white54,
+                              ),
+                            ),
+
+                          ],
+                        ),
                       ),
                     );
                   },
