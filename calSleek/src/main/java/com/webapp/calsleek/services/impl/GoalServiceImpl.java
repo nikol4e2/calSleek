@@ -54,33 +54,27 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public Goal editGoal(Long id, UpdateGoalDto dto) {
-        Goal goal=goalRepository.findById(id).orElseThrow(()-> new RuntimeException("Goal not found"));
+
+        Goal goal = goalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Goal not found"));
 
 
-        int calculatedCalories=  dto.getCarbs() * 4 +
-                dto.getProteins() * 4 +
-                dto.getFats() * 9;
+        Measurement latest = measurementService
+                .getLatest(goal.getUser().getId());
 
-        if(calculatedCalories != dto.getCalories()){
-            throw new IllegalArgumentException(
-                    "Macros do not match calories"
-            );
-        };
 
+        // update values selected by user
         goal.setActivityLevel(dto.getActivityLevel());
-        goal.setHeight(dto.getHeight());
-        goal.setAge(dto.getAge());
-        goal.setIsMale(dto.getIsMale());
         goal.setGoalType(dto.getGoalType());
 
-        goal.setCalories(dto.getCalories());
-        goal.setCarbs(dto.getCarbs());
-        goal.setProteins(dto.getProteins());
-        goal.setFats(dto.getFats());
 
-
-        Measurement latest=measurementService.getLatest(goal.getUser().getId());
+        // always use latest weight
         goal.setWeight(latest.getValue());
+
+
+        // recalculate calories and macros
+        goal.calculateCalories();
+
 
         return goalRepository.save(goal);
     }

@@ -57,10 +57,10 @@ public class Goal {
 
         double activityFactor=switch (activityLevel)
         {
-            case NOT_VERY_ACTIVE -> 1;
-            case LIGHTLY_ACTIVE -> 1.25;
-            case ACTIVE -> 1.375;
-            case VERY_ACTIVE -> 1.55;
+            case NOT_VERY_ACTIVE -> 1.2;
+            case LIGHTLY_ACTIVE -> 1.375;
+            case ACTIVE -> 1.55;
+            case VERY_ACTIVE -> 1.725;
         };
         double calories=bmr*activityFactor;
 

@@ -11,152 +11,394 @@ class GoalsScreen extends StatefulWidget {
 }
 
 class _GoalsScreenState extends State<GoalsScreen> {
+
   final GoalService service = GoalService();
 
-  Map<String, dynamic>? goal;
+  Map<String,dynamic>? goal;
 
   bool loading = true;
 
-  final caloriesController = TextEditingController();
-  final carbsController = TextEditingController();
-  final proteinsController = TextEditingController();
-  final fatsController = TextEditingController();
+  String? activityLevel;
+  String? goalType;
 
-  int? goalId;
+
+  final activityOptions = [
+    "NOT_VERY_ACTIVE",
+    "LIGHTLY_ACTIVE",
+    "ACTIVE",
+    "VERY_ACTIVE"
+  ];
+
+
+  final goalOptions = [
+    "LOSE_500GR_PER_WEEK",
+    "LOSE_1KGR_PER_WEEK",
+    "MAINTAIN",
+    "GAIN_500GR_PER_WEEK",
+    "GAIN_1KGR_PER_WEEK"
+  ];
+
 
   @override
   void initState() {
     super.initState();
-    load();
+    loadGoal();
   }
 
-  void load() async {
+
+  void loadGoal() async {
+
     final userId = await Storage.getUserId();
+
     final res = await service.getGoalByUserId(userId!);
 
+
     setState(() {
+
       goal = res;
-      goalId = res['id'];
 
-      caloriesController.text = res["calories"].toString();
+      activityLevel = res['activityLevel'];
 
-      carbsController.text = res["carbs"].toString();
-
-      proteinsController.text = res["proteins"].toString();
-
-      fatsController.text = res["fats"].toString();
+      goalType = res['goalType'];
 
       loading = false;
+
     });
+
   }
 
-  bool validateCalories() {
-    final calories = int.tryParse(caloriesController.text) ?? 0;
-    final carbs = int.tryParse(carbsController.text) ?? 0;
 
-    final protein = int.tryParse(proteinsController.text) ?? 0;
 
-    final fats = int.tryParse(fatsController.text) ?? 0;
-
-    final calculated = carbs * 4 + protein * 4 + fats * 9;
-
-    return (calculated - calories).abs() <= 50;
-  }
-
-  void save() async {
-    if (!validateCalories()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Calories do not match macros")),
-      );
-
-      return;
-    }
-    final body = {
-      "activityLevel": goal!["activityLevel"],
-
-      "weight": goal!["weight"],
-
-      "height": goal!["height"],
-
-      "age": goal!["age"],
-
-      "isMale": goal!["isMale"],
-
-      "goalType": goal!["goalType"],
-
-      "calories": int.parse(caloriesController.text),
-
-      "carbs": int.parse(carbsController.text),
-
-      "proteins": int.parse(proteinsController.text),
-
-      "fats": int.parse(fatsController.text),
-    };
+  void updateGoal() async {
 
     try {
-      await service.updateGoal(goalId!, body);
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Goal updated")));
-    } catch (e) {
+      await service.updateGoal(
+        goal!['id'],
+        {
+          "activityLevel": activityLevel,
+          "goalType": goalType,
+        },
+      );
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Goal updated"),
+        ),
+      );
+
+
+      loadGoal();
+
+
+    } catch(e){
+
       print(e);
+
     }
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
+
+
+    if(loading){
+
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+
     }
 
+
     return Scaffold(
+
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text("My Goal")),
+
+      appBar: AppBar(
+        title: const Text("Goals"),
+      ),
+
 
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            input("Calories", caloriesController),
 
-            input("Carbs (g)", carbsController),
-            input("Protein (g)", proteinsController),
-            input("Fats (g)", fatsController),
-            
-            const SizedBox(height: 30),
-            
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryRed,
+        padding: const EdgeInsets.all(16),
+
+        child: Column(
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+
+
+            const Text(
+              "Update your goal",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
               ),
-              onPressed: save,
-              
-              child: const Text("Save changes",style: TextStyle(color:Colors.white),),
+            ),
+
+
+            const SizedBox(height:25),
+
+
+
+            dropdownCard(
+              title: "Activity Level",
+              value: activityLevel!,
+              items: activityOptions,
+              onChanged: (value){
+
+                setState(() {
+                  activityLevel=value;
+                });
+
+              },
+            ),
+
+
+
+            const SizedBox(height:20),
+
+
+
+            dropdownCard(
+              title: "Goal Type",
+              value: goalType!,
+              items: goalOptions,
+              onChanged: (value){
+
+                setState(() {
+                  goalType=value;
+                });
+
+              },
+            ),
+
+
+
+            const SizedBox(height:30),
+
+
+
+            const Text(
+              "Current Plan",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize:22,
+                fontWeight:FontWeight.bold,
+              ),
+            ),
+
+
+            const SizedBox(height:15),
+
+
+
+            infoCard(
+                "Calories",
+                "${goal!['calories']} kcal"
+            ),
+
+
+            infoCard(
+                "Protein",
+                "${goal!['proteins']} g"
+            ),
+
+
+            infoCard(
+                "Carbs",
+                "${goal!['carbs']} g"
+            ),
+
+
+            infoCard(
+                "Fats",
+                "${goal!['fats']} g"
+            ),
+
+
+
+            const Spacer(),
+
+
+
+            SizedBox(
+              width: double.infinity,
+
+              child: ElevatedButton(
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryRed,
+                  padding: const EdgeInsets.all(16),
+                ),
+
+                onPressed: updateGoal,
+
+
+                child: const Text(
+                  "Save Changes",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize:18,
+                  ),
+                ),
+
+              ),
             )
+
+
           ],
+
         ),
+
       ),
+
     );
+
   }
-  
-  Widget input (String label, TextEditingController controller)
-  {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 15),
-      
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(labelText: label, labelStyle: const TextStyle(color: Colors.white54),
-        filled: true,
-        fillColor: Colors.white10,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12)
-        )),
+
+
+
+
+  Widget dropdownCard({
+    required String title,
+    required String value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }){
+
+
+    return Container(
+
+      padding: const EdgeInsets.symmetric(
+        horizontal:16,
+        vertical:5,
       ),
-    
+
+
+      decoration: BoxDecoration(
+
+        color: Colors.white10,
+
+        borderRadius: BorderRadius.circular(16),
+
+      ),
+
+
+      child: DropdownButtonFormField<String>(
+
+        value:value,
+
+
+        dropdownColor: const Color(0xFF222222),
+
+
+        decoration: InputDecoration(
+
+          labelText:title,
+
+          labelStyle:
+          const TextStyle(
+            color:Colors.white54,
+          ),
+
+          border:InputBorder.none,
+
+        ),
+
+
+
+        items: items.map((e){
+
+          return DropdownMenuItem(
+
+            value:e,
+
+            child:Text(
+
+              e.replaceAll("_"," "),
+
+              style:const TextStyle(
+                color:Colors.white,
+              ),
+
+            ),
+
+          );
+
+        }).toList(),
+
+
+        onChanged:onChanged,
+
+      ),
+
     );
+
   }
+
+
+
+
+  Widget infoCard(String title,String value){
+
+
+    return Container(
+
+      margin:const EdgeInsets.only(bottom:10),
+
+
+      padding:const EdgeInsets.all(16),
+
+
+      decoration:BoxDecoration(
+
+        color:Colors.white10,
+
+        borderRadius:BorderRadius.circular(14),
+
+      ),
+
+
+
+      child:Row(
+
+        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+
+
+        children:[
+
+          Text(
+            title,
+            style:const TextStyle(
+              color:Colors.white70,
+            ),
+          ),
+
+
+          Text(
+            value,
+            style:const TextStyle(
+              color:Colors.white,
+              fontWeight:FontWeight.bold,
+            ),
+          ),
+
+        ],
+
+      ),
+
+    );
+
+  }
+
+
 }
