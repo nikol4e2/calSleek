@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/goals_screen.dart';
 import 'package:mobile/screens/progress_screen.dart';
+import 'package:mobile/screens/settings_screen.dart';
 import '../AppColors.dart';
 import '../utils/storage.dart';
 
@@ -105,7 +106,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             profileTile(
               Icons.settings,
               "Settings",
-                  () {},
+                  () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsScreen(),
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 30),
