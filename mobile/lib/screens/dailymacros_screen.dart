@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/AppColors.dart';
 import 'package:mobile/services/exercise_service.dart';
+import 'package:mobile/services/goal_service.dart';
 
 import '../services/dailymacros_service.dart';
 import '../utils/storage.dart';
@@ -20,6 +21,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
 
   final service = DailymacrosService();
   final exerciseService = ExerciseService();
+  final goalService= GoalService();
 
   DateTime selectedDate=DateTime.now();
 
@@ -48,6 +50,11 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
       data = res;
       loading = false;
     });
+  }
+
+  void refresh(){
+
+
   }
   
   
@@ -446,6 +453,13 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
         appBar: AppBar(
           title: const Text("Daily Macros"),
           actions: [
+            IconButton(
+              onPressed: (){
+                load();
+
+              },
+              icon: const Icon(Icons.refresh),
+            ),
             IconButton(
               icon: const Icon(Icons.calendar_today),
               onPressed: () async {

@@ -71,35 +71,24 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
   void updateGoal() async {
 
-    try {
+    await service.updateGoal(
+      goal!['id'],
+      {
+        "activityLevel": activityLevel,
+        "goalType": goalType,
+      },
+    );
 
-      await service.updateGoal(
-        goal!['id'],
-        {
-          "activityLevel": activityLevel,
-          "goalType": goalType,
-        },
-      );
+    if (!mounted) return;
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Goal updated"),
+      ),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Goal updated"),
-        ),
-      );
-
-
-      loadGoal();
-
-
-    } catch(e){
-
-      print(e);
-
-    }
-
+    loadGoal();
   }
-
 
 
   @override

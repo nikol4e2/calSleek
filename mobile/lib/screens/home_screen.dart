@@ -91,6 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home"),
         actions: [
+          IconButton(
+            onPressed: () {
+              load();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+
           IconButton(onPressed: logout, icon: const Icon(Icons.logout))
         ],
       ),
@@ -157,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(width: 6),
 
                         Text(
-                          "${widget.goal['calories']} kcal",
+                          "${data!['calories']} kcal",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 34,
