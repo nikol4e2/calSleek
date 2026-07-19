@@ -4,6 +4,7 @@ import com.webapp.calsleek.model.Food;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.exceptions.FoodNotFoundException;
 import com.webapp.calsleek.model.exceptions.UserNotFoundException;
+import com.webapp.calsleek.repositories.FoodEntryRepository;
 import com.webapp.calsleek.repositories.FoodRepository;
 import com.webapp.calsleek.repositories.UserRepository;
 import com.webapp.calsleek.services.FoodService;
@@ -17,11 +18,13 @@ public class FoodServiceImpl implements FoodService {
 
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
+    private final FoodEntryRepository foodEntryRepository;
 
 
-    public FoodServiceImpl(FoodRepository foodRepository, UserRepository userRepository) {
+    public FoodServiceImpl(FoodRepository foodRepository, UserRepository userRepository, FoodEntryRepository foodEntryRepository) {
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
+        this.foodEntryRepository = foodEntryRepository;
     }
 
     @Override
@@ -78,9 +81,13 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public void deleteById(Long id) {
-        if(this.foodRepository.existsById(id))
-        {
-           this.foodRepository.deleteById(id);
+        Food food = foodRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Food not found"));
+
+        if(!foodEntryRepository.existsByFoodId(id)) {
+            foodRepository.delete(food);
+        } else {
+            throw new RuntimeException("Food is already used");
         }
     }
 

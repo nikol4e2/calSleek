@@ -83,7 +83,23 @@ class FoodService {
         throw Exception("Failed to create food");
       }
   }
+  
+  
+  Future<void> deleteFood(int id) async{
+    
+    final token= await Storage.getToken();
 
+    final res = await http.delete(
+      Uri.parse("$baseUrl/$id"),
+      headers: {
+        "Authorization": "Bearer $token",
+      },
+    );
+    if (res.statusCode != 204) {
+      throw Exception("Failed to delete food");
+    }
+
+  }
 
 
 

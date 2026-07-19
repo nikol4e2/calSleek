@@ -103,7 +103,33 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
             ),
 
         ),
+        IconButton(
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.redAccent,
+          ),
+
+          onPressed: () async {
+
+            try {
+
+              await service.deleteFood(food['id']);
+
+              loadFoods();
+
+            } catch(e){
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("This food is already used and cannot be deleted"),
+                ),
+              );
+
+            }
+          },
+        ),
         const SizedBox(height: 8,),
+
       Container(
 
       padding: const EdgeInsets.symmetric(
@@ -140,6 +166,7 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
       ),
 
       ),
+
       ],
       ),
       );
