@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/add_own_food_screen.dart';
 import 'package:mobile/screens/goals_screen.dart';
+import 'package:mobile/screens/my_foods_screen.dart';
 import 'package:mobile/screens/progress_screen.dart';
 import 'package:mobile/screens/settings_screen.dart';
 import '../AppColors.dart';
@@ -95,13 +97,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
 
-            // profileTile(
-            //   Icons.restaurant,
-            //   "My Foods",
-            //       () {
-            //     // navigate to custom foods
-            //   },
-            // ),
+            profileTile(
+              Icons.restaurant,
+              "My Foods",
+                  () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyFoodsScreen(),
+                        )
+                    );
+              },
+            ),
 
             profileTile(
               Icons.settings,

@@ -3,6 +3,7 @@ package com.webapp.calsleek.web;
 import com.webapp.calsleek.model.Food;
 import com.webapp.calsleek.model.User;
 import com.webapp.calsleek.model.dtos.FoodDto;
+import com.webapp.calsleek.model.dtos.FoodDtoResponse;
 import com.webapp.calsleek.services.FoodService;
 import com.webapp.calsleek.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -103,13 +104,23 @@ public class FoodController {
     }
 
     @GetMapping("/created-by/{userId}")
-    public ResponseEntity<List<Food>> getAllCreatedBy(@PathVariable Long userId) {
-        List<Food> foods=this.foodService.getAllCreatedByUser(userId);
-        if(!foods.isEmpty())
-        {
-            return ResponseEntity.ok(foods);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<List<FoodDtoResponse>> getAllCreatedBy(@PathVariable Long userId) {
+        List<FoodDtoResponse> foods = foodService
+                .getAllCreatedByUser(userId)
+                .stream()
+                .map(f -> new FoodDtoResponse(
+                        f.getId(),
+                        f.getName(),
+                        f.getBrand(),
+                        f.getCalories(),
+                        f.getCarbs(),
+                        f.getProtein(),
+                        f.getFats(),
+                        f.isVerified()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(foods);
     }
 
 

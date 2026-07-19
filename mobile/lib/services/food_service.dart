@@ -65,6 +65,28 @@ class FoodService {
     }
   }
 
+  Future<void> createFood(Map<String,dynamic> body) async{
+
+    final token= await Storage.getToken();
+
+    final res = await http.post(
+      Uri.parse(baseUrl),
+      headers: {"Content-Type": "application/json",
+      "Authorization": "Bearer $token",},
+
+      body: jsonEncode(body)
+
+    );
+
+    if(res.statusCode!=201)
+      {
+        throw Exception("Failed to create food");
+      }
+  }
+
+
+
+
 
 
 }

@@ -39,6 +39,7 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
     setState(() {
       foods=res;
       loading=false;
+      print(res);
     });
   }
   @override
@@ -112,7 +113,7 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
 
       decoration: BoxDecoration(
 
-      color: food['isVerified']
+      color: food['verified']
 
       ? Colors.green.withOpacity(0.2)
 
@@ -123,14 +124,14 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
       ),
       child: Text(
 
-      food['isVerified']
+      food['verified']
       ? "Approved"
           : "Pending approval",
 
 
       style: TextStyle(
 
-      color: food['isVerified']
+      color: food['verified']
       ? Colors.greenAccent
           : Colors.orangeAccent,
 
