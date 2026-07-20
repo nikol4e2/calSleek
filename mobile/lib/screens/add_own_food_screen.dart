@@ -3,6 +3,8 @@ import 'package:mobile/services/food_service.dart';
 import 'package:mobile/utils/storage.dart';
 
 import '../AppColors.dart';
+import '../models/Food.dart';
+import '../utils/user_food_cache.dart';
 
 class AddOwnFoodScreen extends StatefulWidget {
   const AddOwnFoodScreen({super.key});
@@ -63,7 +65,7 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
     try {
       final userId = await Storage.getUserId();
 
-      await service.createFood({
+      final res=await service.createFood({
         "name": name,
         "brand": brand,
         "calories": calories,
@@ -73,6 +75,8 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
         "userId": userId,
       });
 
+      final newFood=Food.fromJson(res);
+      UserFoodCache.foods.add(newFood);
       if (!mounted) return;
 
       Navigator.pop(context, true);
@@ -82,6 +86,7 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }finally {
       if(mounted){
+
         setState(() {
           loading=false;
         });

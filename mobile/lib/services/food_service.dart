@@ -65,7 +65,7 @@ class FoodService {
     }
   }
 
-  Future<void> createFood(Map<String,dynamic> body) async{
+  Future<Map<String,dynamic>> createFood(Map<String,dynamic> body) async{
 
     final token= await Storage.getToken();
 
@@ -77,11 +77,15 @@ class FoodService {
       body: jsonEncode(body)
 
     );
+    if(res.statusCode == 201){
 
-    if(res.statusCode!=201)
-      {
+      return jsonDecode(res.body);
+
+    }
+
+
         throw Exception("Failed to create food");
-      }
+
   }
   
   

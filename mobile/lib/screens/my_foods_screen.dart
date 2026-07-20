@@ -3,6 +3,7 @@ import 'package:mobile/screens/add_own_food_screen.dart';
 import '../AppColors.dart';
 import '../services/food_service.dart';
 import '../utils/storage.dart';
+import '../utils/user_food_cache.dart';
 
 
 
@@ -116,6 +117,9 @@ class _MyFoodsScreenState extends State<MyFoodsScreen> {
               await service.deleteFood(food['id']);
 
               loadFoods();
+              UserFoodCache.foods.removeWhere(
+                    (f) => f.id == food.id,
+              );
 
             } catch(e){
 

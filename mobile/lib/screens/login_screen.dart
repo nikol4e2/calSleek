@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/screens/main_screen.dart';
 import 'package:mobile/screens/register_screen.dart';
+import 'package:mobile/services/food_service.dart';
 import 'package:mobile/utils/storage.dart';
+import 'package:mobile/utils/user_food_cache.dart';
 
+import '../models/Food.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 
@@ -19,6 +22,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   final authService = AuthService();
+  
+  final FoodService foodService=FoodService();
 
   bool isLoading = false;
 
@@ -36,8 +41,15 @@ class _LoginScreenState extends State<LoginScreen> {
       await Storage.saveUserId(res['userId']);
       await Storage.saveUserName(res['username']);
 
+      
+
 
       final userId=res['userId'];
+
+      final foods=await foodService.getUserFoods(userId);
+
+      UserFoodCache.foods =
+          foods.map((e) => Food.fromJson(e)).toList();
 
 
       Navigator.pushReplacement(context,

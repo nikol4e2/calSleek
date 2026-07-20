@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/services/dailymacros_service.dart';
 import 'package:mobile/services/food_service.dart';
+import 'package:mobile/utils/user_food_cache.dart';
 
 import '../models/Food.dart';
 
@@ -28,41 +29,81 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   final FoodService foodService= FoodService();
   final DailymacrosService macrosService = DailymacrosService();
 
+  bool onlyMyFoods=false;
+
+
   @override
   void initState() {
 
     super.initState();
     loadFoods();
   }
-  //TODO Change later for optimization, change with recent foods
-  void loadFoods() async {
-    try {
-      final res = await foodService.getAll();
+  //TODO Change later with recent foods
+  void loadFoods() {
 
-      setState(() {
-        foods = res.map((e) => Food.fromJson(e)).toList();
-        loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        loading = false;
-      });
+    setState(() {
 
-      debugPrint("Error loading foods: $e");
-    }
+      foods = UserFoodCache.foods;
+      loading=false;
+    });
+
   }
 
 
   void search(String text) async{
     if(text.isEmpty){
-      loadFoods();//TODO replace with recents
+      loadFoods();
       return;
     }
+    //MY FOODS ONLY
+    if (onlyMyFoods) {
+
+      final result = UserFoodCache.foods.where((food) {
+
+        return food.name
+            .toLowerCase()
+            .contains(text.toLowerCase());
+
+      }).toList();
+
+
+      setState(() {
+        foods = result;
+      });
+
+      return;
+    }
+
+    //SEARCH ALL VERIFIED FOODS
     final res = await foodService.searchFoods(text);
 
+    final apiFoods= res.map((e)=>Food.fromJson(e)).toList();
+
+    // SEARCH USER FOODS
+    final userFoods = UserFoodCache.foods.where((food) {
+
+      return food.name
+          .toLowerCase()
+          .contains(text.toLowerCase());
+
+    }).toList();
+
+    final Map<int,Food> merged={};
+
+    for(final food in apiFoods){
+      merged[food.id] = food;
+    }
+
+
+    for(final food in userFoods){
+      merged[food.id] = food;
+    }
+
+
     setState(() {
-      foods = res.map((e) => Food.fromJson(e)).toList();
+      foods = merged.values.toList();
     });
+   
   }
 
   void addFood() async {
@@ -79,6 +120,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     widget.onAdded();
     Navigator.pop(context);
   }
+
 
 
   @override
@@ -138,6 +180,30 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                   hintText: "Search food...",
                   hintStyle: TextStyle(color: Colors.white54)
                 ),
+              ),
+
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+
+                title: const Text(
+                  "My Foods Only",
+                  style: TextStyle(color: Colors.white),
+                ),
+
+                value: onlyMyFoods,
+
+                activeColor: Colors.redAccent,
+
+                onChanged: (value){
+
+                  setState(() {
+                    onlyMyFoods = value ?? false;
+                  });
+
+
+                  search(searchController.text);
+
+                },
               ),
 
               const SizedBox(height: 10,),

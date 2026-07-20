@@ -55,7 +55,7 @@ public class FoodController {
 
             user = userService.findById(foodDto.getUserId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-            isVerified = false; // Храна од корисник — не е верифицирана
+            isVerified = false;
         }
 
         Food food = foodService.saveFood(
