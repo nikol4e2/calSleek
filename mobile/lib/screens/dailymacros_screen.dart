@@ -658,17 +658,38 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
       grouped[cat]!.add(f);
     }
 
-    return
-       [
-        section("Breakfast", grouped["BREAKFAST"]!, macros['id']),
-        section("Lunch", grouped["LUNCH"]!, macros['id']),
-        section("Dinner", grouped["DINNER"]!, macros['id']),
-        section("Snacks", grouped["SNACKS"]!, macros['id']),
-      ]
-    ;
+    return [
+      section(
+        "Breakfast",
+        "BREAKFAST",
+        grouped["BREAKFAST"] ?? [],
+        macros['id'],
+      ),
+
+      section(
+        "Lunch",
+        "LUNCH",
+        grouped["LUNCH"] ?? [],
+        macros['id'],
+      ),
+
+      section(
+        "Dinner",
+        "DINNER",
+        grouped["DINNER"] ?? [],
+        macros['id'],
+      ),
+
+      section(
+        "Snacks",
+        "SNACK",
+        grouped["SNACK"] ?? [],
+        macros['id'],
+      ),
+    ];
   }
 
-  Widget section(String title, List foods, int macrosId) {
+  Widget section(String title, String category,List foods, int macrosId) {
 
     int totalCalories = foods.fold(
       0,
@@ -823,7 +844,7 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () => addFoodDialog(macrosId),
+              onPressed: () => addFoodDialog(macrosId,category),
               icon: const Icon(Icons.add),
               label: const Text("Add food"),
               style: ElevatedButton.styleFrom(
@@ -841,12 +862,13 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
     );
   }
 
-  void addFoodDialog(int macrosId){
+  void addFoodDialog(int macrosId,String category){
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => AddFoodSheet(
+          category: category,
           macrosId: macrosId,
           onAdded: load,
         ));

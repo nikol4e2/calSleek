@@ -8,10 +8,16 @@ import '../models/Food.dart';
 
 class AddFoodSheet extends StatefulWidget {
   final int macrosId;
+  final String category;
   final VoidCallback onAdded;
 
 
-  const AddFoodSheet({super.key, required this.macrosId, required this.onAdded});
+  const AddFoodSheet({
+    super.key,
+    required this.macrosId,
+    required this.category,
+    required this.onAdded
+  });
 
   @override
   State<AddFoodSheet> createState() => _AddFoodSheetState();
@@ -33,14 +39,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   bool onlyMyFoods=false;
 
 
-  String selectedCategory="BREAKFAST";
 
-  final categories = [
-    "BREAKFAST",
-    "LUNCH",
-    "DINNER",
-    "SNACK"
-  ];
 
 
   @override
@@ -51,6 +50,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   }
 
   void loadFoods() {
+    print("USER FOODS: ${UserFoodCache.foods.length}");
+    print("RECENT FOODS: ${Recentfoodcache.foods.length}");
 
     final List<Food> combined = [];
 
@@ -135,7 +136,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     await macrosService.addFood(widget.macrosId, {
       "foodId": selectedFood!.id,
       "grams": grams,
-      "category": "BREAKFAST"
+      "category": widget.category
     });
 
     widget.onAdded();
@@ -304,6 +305,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 ),
 
                 const SizedBox(height: 10),
+
 
                 ElevatedButton(
                   onPressed: addFood,
