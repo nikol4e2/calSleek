@@ -33,6 +33,16 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   bool onlyMyFoods=false;
 
 
+  String selectedCategory="BREAKFAST";
+
+  final categories = [
+    "BREAKFAST",
+    "LUNCH",
+    "DINNER",
+    "SNACK"
+  ];
+
+
   @override
   void initState() {
 

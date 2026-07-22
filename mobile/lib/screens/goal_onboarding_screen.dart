@@ -289,6 +289,10 @@ class _GoalOnboardingScreenState
         backgroundColor: AppColors.primaryRed,
       ),
       onPressed: () {
+        if(!validateCurrentStep()){
+          showValidationError();
+          return;
+        }
         if (step < 5) {
           setState(() => step++);
         } else {
@@ -328,5 +332,60 @@ class _GoalOnboardingScreenState
     } catch (e) {
       print(e);
     }
+  }
+
+  bool validateCurrentStep(){
+
+    switch(step)
+        {
+      case 0: return data.gender.isNotEmpty;
+
+      case 1: return data.weight >=30 && data.weight <= 300;
+
+      case 2: return data.height >=100 && data.height <=250;
+
+      case 3: return data.age >12 && data.age<=110;
+
+      case 4: return data.activityLevel.isNotEmpty;
+
+      case 5: return data.goalType.isNotEmpty;
+
+      default:
+        return true;
+    }
+  }
+
+  void showValidationError(){
+
+    String message="";
+
+    switch(step) {
+      case 0:
+        message = "Please select your gender";
+        break;
+
+      case 1:
+        message = "Weight must be between 30 and 300 kg";
+        break;
+
+      case 2:
+        message = "Height must be between 100 and 250cm";
+        break;
+
+      case 3:
+        message = "Age must be between 12 and 110";
+        break;
+
+      case 4:
+        message = "Please select activity level";
+        break;
+
+      case 5:
+        message = "Please select your goal";
+        break;
+
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }
