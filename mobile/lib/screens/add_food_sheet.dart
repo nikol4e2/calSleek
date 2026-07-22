@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/services/dailymacros_service.dart';
 import 'package:mobile/services/food_service.dart';
+import 'package:mobile/utils/RecentFoodCache.dart';
 import 'package:mobile/utils/user_food_cache.dart';
 
 import '../models/Food.dart';
@@ -38,15 +39,25 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     super.initState();
     loadFoods();
   }
-  //TODO Change later with recent foods
+
   void loadFoods() {
 
+    final List<Food> combined = [];
+
+    combined.addAll(Recentfoodcache.foods);
+
+    for (final food in UserFoodCache.foods) {
+
+      if (!combined.any((f) => f.id == food.id)) {
+        combined.add(food);
+      }
+
+    }
+
     setState(() {
-
-      foods = UserFoodCache.foods;
-      loading=false;
+      foods = combined;
+      loading = false;
     });
-
   }
 
 
@@ -118,6 +129,18 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     });
 
     widget.onAdded();
+
+
+    Recentfoodcache.foods.removeWhere(
+          (f) => f.id == selectedFood!.id,
+    );
+
+    Recentfoodcache.foods.insert(0, selectedFood!);
+
+    if (Recentfoodcache.foods.length > 20) {
+      Recentfoodcache.foods.removeLast();
+    }
+
     Navigator.pop(context);
   }
 
