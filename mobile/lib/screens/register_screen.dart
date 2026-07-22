@@ -28,31 +28,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool loading = false;
   final authService= AuthService();
   bool validate(){
-    final email=emailController.text.trim();
-    final password=passwordController.text.trim();
-    final repeat=repeatPasswordController.text.trim();
+    final username = usernameController.text.trim();
+    final firstName = firstNameController.text.trim();
+    final lastName = lastNameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final repeat = repeatPasswordController.text.trim();
+    if(username.isEmpty ||
+        firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        repeat.isEmpty){
 
-    if(email.isEmpty || password.isEmpty || repeat.isEmpty || usernameController.text.isEmpty || firstNameController.text.isEmpty || lastNameController.text.isEmpty)
-      {
-        showError("All field are required");
-        return false;
-      }
+      showError("All fields are required");
+      return false;
+    }
 
-    if(!email.contains("@")){
+    //Username check
+    if(username.length < 3 || username.length > 20){
+      showError("Username must be between 3 and 20 characters");
+      return false;
+    }
+    if(!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(username)){
+      showError("Username can contain only letters, numbers and _");
+      return false;
+    }
+
+    //Names check
+    if(!RegExp(r'^[a-zA-Z]+$').hasMatch(firstName) ||
+        !RegExp(r'^[a-zA-Z]+$').hasMatch(lastName)){
+
+      showError("Names can contain only letters");
+      return false;
+    }
+
+    //Email check
+    if(!RegExp(
+        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+    ).hasMatch(email)){
+
       showError("Invalid email");
       return false;
     }
 
-    if(password.length<6){
-      showError("Password too short");
+
+
+    //Password check
+    if(password.length < 8){
+      showError("Password must contain at least 8 characters");
       return false;
     }
 
-    if(password!=repeat)
-      {
-        showError("Passwords do not match!");
-        return false;
-      }
+
+
+
+
+    if(!RegExp(r'[0-9]').hasMatch(password)){
+      showError("Password needs one number");
+      return false;
+    }
+
+
+    if(password != repeat){
+      showError("Passwords do not match");
+      return false;
+    }
 
     return true;
   }
@@ -104,6 +145,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     setState(() => loading = false);
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    repeatPasswordController.dispose();
+    super.dispose();
   }
 
 
