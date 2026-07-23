@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class User {
     @OneToMany
     private List<Food> createdFoods;
 
+    private int currentStreak;
+    private int bestStreak;
+
+    private LocalDate lastActivityDate;
+
 
     public User(String username, String firstName, String lastName, String email, String password) {
         this.username = username;
@@ -47,6 +53,9 @@ public class User {
         this.measurements=new ArrayList<>();
         this.dailyMacros=new ArrayList<>();
         this.createdFoods=new ArrayList<>();
+        this.currentStreak=0;
+        this.bestStreak=0;
+        this.lastActivityDate=null;
     }
 
 }

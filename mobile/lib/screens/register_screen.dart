@@ -130,6 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final loginResponse = await authService.login(username, password);
       await Storage.saveToken(loginResponse["token"]);
       await Storage.saveUserId(loginResponse["userId"]);
+      await Storage.saveUserName(loginResponse['username']);
 
       if (!mounted) return;
 

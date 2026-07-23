@@ -73,10 +73,10 @@ public class AuthController {
         }
         UserPrincipal up=(UserPrincipal)auth.getPrincipal();
         User user=up.getUser();
-        return ResponseEntity.ok(new UserResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+        return ResponseEntity.ok(new UserResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getCurrentStreak(), user.getBestStreak()));
     }
 
-   
+
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestBody ChangePasswordRequest req,

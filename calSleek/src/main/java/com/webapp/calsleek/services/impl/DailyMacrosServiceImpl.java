@@ -8,10 +8,7 @@ import com.webapp.calsleek.repositories.DailyMacrosRepository;
 import com.webapp.calsleek.repositories.ExerciseLogRepository;
 import com.webapp.calsleek.repositories.ExerciseRepository;
 import com.webapp.calsleek.repositories.FoodEntryRepository;
-import com.webapp.calsleek.services.DailyMacrosService;
-import com.webapp.calsleek.services.ExerciseLogService;
-import com.webapp.calsleek.services.FoodEntryService;
-import com.webapp.calsleek.services.UserService;
+import com.webapp.calsleek.services.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,9 +28,9 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
     private final FoodEntryRepository foodEntryRepository;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseLogRepository exerciseLogRepository;
+    private final StreakService streakService;
 
-
-    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService, FoodEntryRepository foodEntryRepository, ExerciseRepository exerciseRepository, ExerciseLogRepository exerciseLogRepository) {
+    public DailyMacrosServiceImpl(DailyMacrosRepository dailyMacrosRepository, UserService userService, ExerciseLogService exerciseLogService, FoodEntryService foodEntryService, FoodEntryRepository foodEntryRepository, ExerciseRepository exerciseRepository, ExerciseLogRepository exerciseLogRepository, StreakService streakService) {
         this.dailyMacrosRepository = dailyMacrosRepository;
         this.userService = userService;
         this.exerciseLogService = exerciseLogService;
@@ -41,6 +38,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
         this.foodEntryRepository = foodEntryRepository;
         this.exerciseRepository = exerciseRepository;
         this.exerciseLogRepository = exerciseLogRepository;
+        this.streakService = streakService;
     }
 
     @Override
@@ -65,6 +63,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
         DailyMacros dailyMacros = this.dailyMacrosRepository.findById(dailyMacrosId).orElseThrow(()->new RuntimeException("Daily Macros not found"));
         dailyMacros.addFoodEntry(foodEntry);
         this.dailyMacrosRepository.save(dailyMacros);
+        streakService.updateStreak(dailyMacros.getUser());
     }
 
     @Override
@@ -80,6 +79,7 @@ public class DailyMacrosServiceImpl implements DailyMacrosService {
         DailyMacros dailyMacros = this.dailyMacrosRepository.findById(dailyMacrosId).orElseThrow(()->new RuntimeException("Daily Macros not found"));
         dailyMacros.addExerciseLog(exerciseLog);
         this.dailyMacrosRepository.save(dailyMacros);
+        streakService.updateStreak(dailyMacros.getUser());
     }
 
     @Override
