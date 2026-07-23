@@ -58,7 +58,7 @@ class AuthService{
       ) async {
 
     final response = await http.put(
-      Uri.parse("$baseUrl/api/auth/change-password"),
+      Uri.parse("$baseUrl/change-password"),
       headers: {
         "Content-Type":"application/json",
         "Authorization":"Bearer ${await Storage.getToken()}"
@@ -77,6 +77,26 @@ class AuthService{
       );
     }
 
+  }
+  
+  
+  Future<Map<String,dynamic>> getMe() async{
+
+
+    final response = await http.get(
+      Uri.parse("$baseUrl/me"),
+      headers: {
+        "Authorization": "Bearer ${await Storage.getToken()}",
+      },
+    ).timeout(
+      const Duration(seconds: 10),
+    );
+
+    if(response.statusCode == 200){
+      return jsonDecode(response.body);
+    }else{
+      throw Exception("Failed to load user");
+    }
   }
 
 
