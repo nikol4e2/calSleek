@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/services/food_service.dart';
 import 'package:mobile/utils/storage.dart';
 
@@ -36,11 +37,50 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
     final fats=  int.tryParse(fatsController.text);
 
 
-    if(name.isEmpty || calories==null || protein==null || carbs==null || fats==null){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields"))
-      );
+    if (name.isEmpty) {
+      showError("Food name is required");
+      return;
+    }
 
+    if (name.length < 2) {
+      showError("Food name is too short");
+      return;
+    }
+
+    if (name.length > 60) {
+      showError("Food name is too long");
+      return;
+    }
+
+    if (brand.length > 40) {
+      showError("Brand name is too long");
+      return;
+    }
+
+    if (calories == null ||
+        protein == null ||
+        carbs == null ||
+        fats == null) {
+      showError("Please fill all nutrition fields");
+      return;
+    }
+    if (calories <= 0 || calories > 9000) {
+      showError("Calories must be between 1 and 9000");
+      return;
+    }
+
+    if (protein < 0 || protein > 1000) {
+      showError("Protein must be between 0 and 1000 g");
+      return;
+    }
+
+    if (carbs < 0 || carbs > 1000) {
+      showError("Carbs must be between 0 and 1000 g");
+      return;
+    }
+
+    if (fats < 0 || fats > 1000) {
+      showError("Fat must be between 0 and 1000 g");
       return;
     }
 
@@ -95,16 +135,26 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
     
   }
 
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
-  Widget inputField(String label, TextEditingController controller){
+
+  Widget inputField(String label, TextEditingController controller, {bool isNumber=false}){
 
     return Padding(
       padding: const EdgeInsetsGeometry.only(bottom: 16),
       child: TextField(
         controller:  controller,
-        keyboardType: TextInputType.text,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         style: const TextStyle(color: Colors.white),
-
+        inputFormatters: isNumber
+            ? [
+          FilteringTextInputFormatter.digitsOnly,
+        ]
+            : [],
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(color: Colors.white54),
@@ -119,7 +169,7 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
     );
   }
 
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,15 +183,15 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
         
         child: Column(
           children: [
-            inputField("Food name", nameController),
+            inputField("Food name", nameController,),
             
             inputField("Brand", brandController),
             
-            inputField("Calories", caloriesController),
+            inputField("Calories", caloriesController, isNumber: true),
             
-            inputField("Protein (g)", proteinController),
-            inputField("Carbs (g)", carbsController),
-            inputField("Fats (g)", fatsController),
+            inputField("Protein (g)", proteinController, isNumber: true),
+            inputField("Carbs (g)", carbsController, isNumber: true),
+            inputField("Fats (g)", fatsController, isNumber: true),
             
             const SizedBox(height: 20,),
             
@@ -164,5 +214,18 @@ class _AddOwnFoodScreenState extends State<AddOwnFoodScreen> {
         ),
       ),
     );
+  }
+
+
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    brandController.dispose();
+    caloriesController.dispose();
+    proteinController.dispose();
+    carbsController.dispose();
+    fatsController.dispose();
+    super.dispose();
   }
 }
