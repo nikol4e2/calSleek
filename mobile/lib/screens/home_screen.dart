@@ -5,6 +5,7 @@ import 'package:mobile/services/goal_service.dart';
 import 'package:mobile/services/measurement_service.dart';
 import 'package:mobile/utils/storage.dart';
 import '../services/api_service.dart';
+import '../services/notification_service.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -51,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     load();
     loadLatestWeight();
     loadUser();
+
   }
 
 
@@ -91,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         data=res;
 
       });
+
     }catch(e){
       print(e);
     }

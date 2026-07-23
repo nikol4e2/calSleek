@@ -3,6 +3,7 @@ import '../AppColors.dart';
 import '../utils/storage.dart';
 import 'change_password_screen.dart';
 import 'login_screen.dart';
+import 'notification_settings_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -59,7 +60,13 @@ class SettingsScreen extends StatelessWidget {
               Icons.notifications,
               "Notifications",
                   () {
-                // TODO
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationSettingsScreen(),
+                      ),
+                    );
+
               },
             ),
 

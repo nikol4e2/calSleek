@@ -3,11 +3,16 @@ import 'package:mobile/screens/goal_onboarding_screen.dart';
 import 'package:mobile/screens/home_screen.dart';
 import 'package:mobile/screens/login_screen.dart';
 import 'package:mobile/screens/main_screen.dart';
+import 'package:mobile/services/notification_service.dart';
 
 import "utils/storage.dart";
 
-void main() {
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
