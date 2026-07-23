@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/AppColors.dart';
 import 'package:mobile/services/exercise_service.dart';
 import 'package:mobile/services/goal_service.dart';
@@ -123,6 +124,9 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                         child: TextField(
                           controller: controller,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           textAlign: TextAlign.center,
                           onChanged: (_) {
                             setDialogState(() {});
@@ -233,7 +237,25 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: () async {
-                                if (grams <= 0) return;
+
+                                if (grams <= 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Grams must be greater than 0"),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                if (grams > 2000) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Maximum amount is 2000g"),
+                                    ),
+                                  );
+                                  return;
+                                }
+
 
                                 await service.updateFoodEntry(
                                   macrosId,
@@ -908,6 +930,9 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                     TextField(
                       controller: controller,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
@@ -936,7 +961,23 @@ class _DailyMacrosScreenState extends State<DailyMacrosScreen> {
                               final minutes =
                                   int.tryParse(controller.text) ?? 0;
 
-                              if (minutes <= 0) return;
+                              if (minutes <= 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Duration must be greater than 0"),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (minutes > 600) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Maximum duration is 600 minutes"),
+                                  ),
+                                );
+                                return;
+                              }
+
 
                               await exerciseService.updateExercise(
                                 macrosId,

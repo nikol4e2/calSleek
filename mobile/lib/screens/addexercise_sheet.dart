@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/services/exercise_service.dart';
 
 class AddExerciseSheet extends StatefulWidget {
@@ -71,7 +72,25 @@ class _AddExerciseSheetState extends State<AddExerciseSheet> {
   void add() async {
     final minutes = int.tryParse(durationController.text) ?? 0;
 
-    if (selectedExerciseId == null || minutes <= 0) return;
+    if (selectedExerciseId == null) {
+      showError("Please select an exercise");
+      return;
+    }
+
+    if (minutes == null) {
+      showError("Enter valid minutes");
+      return;
+    }
+
+    if (minutes <= 0) {
+      showError("Minutes must be greater than 0");
+      return;
+    }
+
+    if (minutes > 600) {
+      showError("Maximum duration is 600 minutes");
+      return;
+    }
 
     await service.addExercise(widget.macrosId, {
       "exerciseId": selectedExerciseId,
@@ -82,6 +101,14 @@ class _AddExerciseSheetState extends State<AddExerciseSheet> {
     Navigator.pop(context);
   }
 
+  void showError(String message){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text(message),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -172,6 +199,9 @@ class _AddExerciseSheetState extends State<AddExerciseSheet> {
               TextField(
                 controller: durationController,
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                ],
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: "Minutes",

@@ -27,14 +27,53 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
+  bool validate(){
+    final username= usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    if(username.isEmpty || password.isEmpty){
+      showError("Username and password are required");
+      return false;
+    }
+
+
+    if(username.length < 3){
+      showError("Username is too short");
+      return false;
+    }
+
+
+    if(password.length < 6){
+      showError("Password must contain at least 6 characters");
+      return false;
+    }
+
+
+    return true;
+  }
+
+  void showError(String msg){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text(msg),
+      ),
+    );
+  }
+
+
   void login() async{
+    if(!validate())
+      {
+        return;
+      }
     setState(() {
       isLoading=true;
     });
     try{
       final res = await authService.login(
-        usernameController.text,
-        passwordController.text
+        usernameController.text.trim(),
+        passwordController.text.trim(),
       );
 
       await Storage.saveToken(res['token']);
@@ -134,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   isLoading ? const Center(child: CircularProgressIndicator(),)
                       : GestureDetector(
-                    onTap: login,
+                    onTap: isLoading ? null : login,
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 16),

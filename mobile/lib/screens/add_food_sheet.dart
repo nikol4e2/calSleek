@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile/services/dailymacros_service.dart';
 import 'package:mobile/services/food_service.dart';
 import 'package:mobile/utils/RecentFoodCache.dart';
@@ -50,8 +51,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   }
 
   void loadFoods() {
-    print("USER FOODS: ${UserFoodCache.foods.length}");
-    print("RECENT FOODS: ${Recentfoodcache.foods.length}");
+
 
     final List<Food> combined = [];
 
@@ -131,7 +131,20 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   void addFood() async {
     final grams = int.tryParse(gramsController.text) ?? 0;
 
-    if (selectedFood == null || grams <= 0) return;
+    if (grams == null) {
+      showError("Please enter grams");
+      return;
+    }
+
+    if (grams <= 0) {
+      showError("Grams must be greater than 0");
+      return;
+    }
+
+    if (grams > 2000) {
+      showError("Maximum allowed amount is 2000 g");
+      return;
+    }
 
     await macrosService.addFood(widget.macrosId, {
       "foodId": selectedFood!.id,
@@ -153,6 +166,12 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
     }
 
     Navigator.pop(context);
+  }
+
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
 
@@ -297,6 +316,9 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 TextField(
                   controller: gramsController,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     hintText: "Grams",
