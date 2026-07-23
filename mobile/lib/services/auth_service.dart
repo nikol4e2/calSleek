@@ -1,6 +1,8 @@
 import "dart:convert";
 import 'package:http/http.dart' as http;
 
+import '../utils/storage.dart';
+
 
 class AuthService{
 
@@ -49,6 +51,32 @@ class AuthService{
       throw Exception(body["message"] ?? "Register failed");
     }
     
+  }
+  Future<void> changePassword(
+      String oldPassword,
+      String newPassword
+      ) async {
+
+    final response = await http.put(
+      Uri.parse("$baseUrl/api/auth/change-password"),
+      headers: {
+        "Content-Type":"application/json",
+        "Authorization":"Bearer ${await Storage.getToken()}"
+      },
+
+      body: jsonEncode({
+        "oldPassword": oldPassword,
+        "newPassword": newPassword
+      }),
+    );
+
+
+    if(response.statusCode != 200){
+      throw Exception(
+          jsonDecode(response.body)["error"]
+      );
+    }
+
   }
 
 

@@ -2,6 +2,7 @@ package com.webapp.calsleek.web;
 
 
 import com.webapp.calsleek.model.User;
+import com.webapp.calsleek.model.dtos.ChangePasswordRequest;
 import com.webapp.calsleek.model.dtos.security.AuthResponse;
 import com.webapp.calsleek.model.dtos.security.LoginRequest;
 import com.webapp.calsleek.model.dtos.security.RegisterRequest;
@@ -73,5 +74,35 @@ public class AuthController {
         UserPrincipal up=(UserPrincipal)auth.getPrincipal();
         User user=up.getUser();
         return ResponseEntity.ok(new UserResponse(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
+    }
+
+   
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest req,
+            Authentication auth
+    ) {
+        try {
+
+            UserPrincipal up = (UserPrincipal) auth.getPrincipal();
+
+            userService.changePassword(
+                    up.getUser().getId(),
+                    req.getOldPassword(),
+                    req.getNewPassword()
+            );
+
+            return ResponseEntity.ok(
+                    java.util.Map.of("message", "Password changed successfully")
+            );
+
+        } catch (InvalidUserCredentialsException e) {
+            return ResponseEntity.status(400)
+                    .body(java.util.Map.of("error", "Current password is incorrect"));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
     }
 }

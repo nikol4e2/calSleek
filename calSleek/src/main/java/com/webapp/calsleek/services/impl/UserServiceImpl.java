@@ -94,4 +94,31 @@ public class UserServiceImpl implements UserService {
         user.setGoal(goal);
         userRepository.save(user);
     }
+
+    @Override
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            throw new InvalidUserCredentialsException("Wrong old password");
+        }
+
+
+        if(newPassword.length() < 6){
+            throw new IllegalArgumentException(
+                    "Password must have at least 6 characters"
+            );
+        }
+
+
+        user.setPassword(
+                passwordEncoder.encode(newPassword)
+        );
+
+
+        userRepository.save(user);
+    }
 }

@@ -14,4 +14,5 @@ public interface UserService {
     Optional<User> findById(Long id);
     void addDailyMacrosToUser(Long userId, DailyMacros dailyMacros);
     void addGoalToUser(Long userId, Goal goal);
+    void changePassword(Long userId, String oldPassword, String newPassword);
 }

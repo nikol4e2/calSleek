@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../AppColors.dart';
 import '../utils/storage.dart';
+import 'change_password_screen.dart';
 import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -43,7 +44,13 @@ class SettingsScreen extends StatelessWidget {
               Icons.lock,
               "Change Password",
                   () {
-                // TODO
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ChangePasswordScreen(),
+                      ),
+                    );
               },
             ),
 
