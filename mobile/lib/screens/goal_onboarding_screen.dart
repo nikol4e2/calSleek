@@ -187,13 +187,24 @@ class _GoalOnboardingScreenState
       ],
     );
   }
-
   Widget activityStep() {
     final options = [
-      "NOT_VERY_ACTIVE",
-      "LIGHTLY_ACTIVE",
-      "ACTIVE",
-      "VERY_ACTIVE"
+      {
+        "value": "NOT_VERY_ACTIVE",
+        "label": "Little or no exercise"
+      },
+      {
+        "value": "LIGHTLY_ACTIVE",
+        "label": "Light exercise (1-3 days/week)"
+      },
+      {
+        "value": "ACTIVE",
+        "label": "Moderate exercise (3-5 days/week)"
+      },
+      {
+        "value": "VERY_ACTIVE",
+        "label": "High activity (6-7 days/week)"
+      },
     ];
 
     return Column(
@@ -201,27 +212,44 @@ class _GoalOnboardingScreenState
       children: [
         const Text(
           "Activity level",
-          style: TextStyle(color: Colors.white, fontSize: 22),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+          ),
         ),
+
         const SizedBox(height: 20),
-        ...options.map((e) => Padding(
+
+        ...options.map((option) => Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
-            onTap: () => setState(() => data.activityLevel = e),
+            onTap: () {
+              setState(() {
+                data.activityLevel = option["value"]!;
+              });
+            },
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: data.activityLevel == e
+                color: data.activityLevel == option["value"]
                     ? AppColors.primaryRed
                     : Colors.white10,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(e, style: const TextStyle(color: Colors.white)),
+              child: Text(
+                option["label"]!,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         )),
+
         const SizedBox(height: 20),
+
         nextButton(),
       ],
     );
@@ -229,11 +257,26 @@ class _GoalOnboardingScreenState
 
   Widget goalTypeStep() {
     final options = [
-      "LOSE_500GR_PER_WEEK",
-      "LOSE_1KGR_PER_WEEK",
-      "MAINTAIN",
-      "GAIN_500GR_PER_WEEK",
-      "GAIN_1KGR_PER_WEEK"
+      {
+        "value": "LOSE_500GR_PER_WEEK",
+        "label": "Lose 0.5 kg per week"
+      },
+      {
+        "value": "LOSE_1KGR_PER_WEEK",
+        "label": "Lose 1 kg per week"
+      },
+      {
+        "value": "MAINTAIN",
+        "label": "Maintain weight"
+      },
+      {
+        "value": "GAIN_500GR_PER_WEEK",
+        "label": "Gain 0.5 kg per week"
+      },
+      {
+        "value": "GAIN_1KGR_PER_WEEK",
+        "label": "Gain 1 kg per week"
+      },
     ];
 
     return Column(
@@ -244,20 +287,30 @@ class _GoalOnboardingScreenState
           style: TextStyle(color: Colors.white, fontSize: 22),
         ),
         const SizedBox(height: 20),
-        ...options.map((e) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+        ...options.map((option) => Padding(
+          padding: const EdgeInsets.only(bottom:10),
           child: GestureDetector(
-            onTap: () => setState(() => data.goalType = e),
+            onTap: (){
+              setState(() {
+                data.goalType = option["value"]!;
+              });
+            },
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: data.goalType == e
+                color: data.goalType == option["value"]
                     ? AppColors.primaryRed
                     : Colors.white10,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(e, style: const TextStyle(color: Colors.white)),
+              child: Text(
+                option["label"]!,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         )),
