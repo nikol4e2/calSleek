@@ -4,12 +4,14 @@ import 'package:mobile/screens/home_screen.dart';
 import 'package:mobile/screens/login_screen.dart';
 import 'package:mobile/screens/main_screen.dart';
 import 'package:mobile/services/notification_service.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import "utils/storage.dart";
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   await NotificationService.init();
   runApp(const MyApp());
 
